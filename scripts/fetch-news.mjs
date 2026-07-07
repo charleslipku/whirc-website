@@ -37,6 +37,20 @@ function matchesKeywords(text, include, exclude) {
   return !exclude.some((k) => t.includes(k.toLowerCase()));
 }
 
+/** 分词匹配：关键词的所有词都出现即命中（兼容 "Alisa Morss Clyne" 匹配 "Alisa Clyne"、
+ *  "Women's Health" 匹配 "womens health"）。用于收紧 newsengine 的 OR 式全文搜索结果。 */
+function normalize(s) {
+  return ` ${s.toLowerCase().replace(/[^a-z0-9]+/g, ' ')} `;
+}
+function matchesAllTokens(text, include, exclude) {
+  const t = normalize(text);
+  const hit = include.some((k) =>
+    normalize(k).trim().split(/\s+/).every((w) => t.includes(` ${w} `))
+  );
+  if (!hit) return false;
+  return !exclude.some((k) => t.includes(normalize(k).trimEnd()));
+}
+
 async function fetchSource(source) {
   const res = await fetch(source.url, {
     headers: { 'user-agent': 'WHIRC-news-bot (whirc.umd.edu; academic site)' },
@@ -73,6 +87,38 @@ async function fetchSource(source) {
     .filter((n) => n.title && n.link && n.date); // 无日期的条目（如静态页面）不收录
 }
 
+/**
+ * Clark School "newsengine" 源（ECE / BIOE 等系）：
+ * 无新闻 RSS，但提供全文搜索 API（JSON）。对每个 include 关键词
+ * 各查询一次，由引擎在全文范围内匹配（覆盖整个新闻库，优于 RSS 的最新 10 条）。
+ */
+async function fetchNewsengine(source, include) {
+  const results = [];
+  for (const keyword of include) {
+    const api = `${source.url}/search.xml.dev.jsp?searchText=${encodeURIComponent(keyword)}&useJSON=Y`;
+    const res = await fetch(api, {
+      headers: { 'user-agent': 'WHIRC-news-bot (whirc.umd.edu; academic site)' },
+      signal: AbortSignal.timeout(30_000),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = JSON.parse(await res.text());
+    for (const r of data.results ?? []) {
+      const date = new Date(r.submitdate);
+      if (!r.headline || !r.semanticurl || Number.isNaN(+date)) continue;
+      results.push({
+        title: cleanText(r.headline),
+        link: `${source.article_base}${r.semanticurl}`,
+        date: date.toISOString().slice(0, 10),
+        excerpt: cleanText(r.blurb ?? '').slice(0, 280),
+        image: r.largeimage && r.largeimage !== 'none' ? r.largeimage : null,
+        source: source.name,
+        sourceId: source.id,
+      });
+    }
+  }
+  return results;
+}
+
 async function main() {
   const config = parseYaml(await readFile(CONFIG_PATH, 'utf8'));
   const include = config.include ?? [];
@@ -95,11 +141,22 @@ async function main() {
   const collected = [];
   for (const source of sources) {
     try {
-      const items = await fetchSource(source);
-      const matched = items.filter((n) =>
-        matchesKeywords(`${n.title} ${n.excerpt}`, include, exclude)
-      );
-      console.log(`[${source.id}] ${items.length} 条，命中 ${matched.length} 条`);
+      let matched;
+      if (source.type === 'newsengine') {
+        // 引擎的全文搜索是 OR 式的（结果过泛），需再用分词匹配收紧：
+        // 关键词的所有词都出现在标题/摘要中才收录
+        const items = await fetchNewsengine(source, include);
+        matched = items.filter((n) =>
+          matchesAllTokens(`${n.title} ${n.excerpt}`, include, exclude)
+        );
+        console.log(`[${source.id}] 引擎返回 ${items.length} 条，精确匹配 ${matched.length} 条`);
+      } else {
+        const items = await fetchSource(source);
+        matched = items.filter((n) =>
+          matchesKeywords(`${n.title} ${n.excerpt}`, include, exclude)
+        );
+        console.log(`[${source.id}] ${items.length} 条，命中 ${matched.length} 条`);
+      }
       collected.push(...matched);
     } catch (err) {
       // 单源故障不中断整体抓取
@@ -107,12 +164,16 @@ async function main() {
     }
   }
 
-  // 按 link 去重合并（保留已有条目，新条目追加）
+  // 去重合并：先按 link，再按「标题+日期」（同一篇 Clark School 新闻
+  // 会以不同链接同时出现在 ECE/BIOE/工学院站点上）
   const byLink = new Map(existing.map((n) => [n.link, n]));
+  const seenTitle = new Set(existing.map((n) => `${normalize(n.title).trim()}|${n.date}`));
   let added = 0;
   for (const item of collected) {
-    if (!byLink.has(item.link)) {
+    const titleKey = `${normalize(item.title).trim()}|${item.date}`;
+    if (!byLink.has(item.link) && !seenTitle.has(titleKey)) {
       byLink.set(item.link, item);
+      seenTitle.add(titleKey);
       added += 1;
     }
   }

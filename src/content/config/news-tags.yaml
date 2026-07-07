@@ -57,5 +57,22 @@ sources:
     url: "https://news.umd.edu/rss.xml"
     enabled: false   # ⚠️ news.umd.edu 域名不存在（2026-07 验证）；UMD 主新闻源即上方 Maryland Today
 
+  # ── newsengine 类型：Clark School 新闻引擎全文搜索 API ──
+  # ECE/BIOE 无新闻 RSS；此类型对每个 include 关键词做全文检索，
+  # 覆盖整个新闻库（不限于最新几条）。url 为 API 基址，
+  # article_base 为文章链接前缀。
+  - id: ece
+    name: "Electrical & Computer Engineering"
+    type: newsengine
+    url: "https://mnemosyne.umd.edu/tomcat/newsengine/ece/version2"
+    article_base: "https://ece.umd.edu/news/story/"
+    enabled: true
+  - id: bioe
+    name: "Fischell Department of Bioengineering"
+    type: newsengine
+    url: "https://mnemosyne.umd.edu/tomcat/newsengine/bioe/version2"
+    article_base: "https://bioe.umd.edu/news/story/"
+    enabled: true
+
 # 归档中最多保留的条数（超出后最旧的被移除）
 max_items: 100
