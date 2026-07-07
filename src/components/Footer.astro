@@ -13,7 +13,7 @@ const socials = [
 <footer class="site-footer">
   <div class="container footer-grid">
     <div class="footer-brand">
-      <img src={url('/images/logo-mark.png')} alt="" class="footer-mark" />
+      <img src={url('/images/logo.png')} alt="" class="footer-mark" />
       <p class="footer-name">{site.shortName}</p>
       <p class="footer-tagline">{site.tagline}</p>
     </div>
@@ -79,12 +79,13 @@ const socials = [
     padding-top: 3rem;
     padding-bottom: 2.5rem;
   }
+  /* 完整横版 Logo（与页头一致）；原图为白底，垫白色圆角底以适配深色页脚 */
   .footer-mark {
-    height: 72px;
+    height: 84px;
     width: auto;
     background: var(--white);
-    border-radius: 50%;
-    padding: 6px;
+    border-radius: var(--radius);
+    padding: 8px 14px;
   }
   .footer-name {
     font-family: var(--font-serif);
