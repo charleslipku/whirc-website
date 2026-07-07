@@ -29,9 +29,7 @@ Every push to `main` triggers `.github/workflows/deploy.yml` → GitHub Pages.
 The news fetcher (`.github/workflows/fetch-news.yml`) runs daily at 11:00 UTC
 and commits updates to `src/data/external-news.json` when new stories match.
 
-### Moving to a custom domain (whirc.umd.edu)
+### Moving to the custom domain (womenshealth.umd.edu)
 
-1. Ask UMD DIT to point the subdomain (CNAME) at `charleslipku.github.io`
-2. Repo → Settings → Pages → set Custom domain, enforce HTTPS
-3. In `astro.config.mjs`: set `site: 'https://whirc.umd.edu'` and `base: '/'`
-4. Replace `/whirc-website/...` image prefixes in content with `/...`
+Full step-by-step guide (DIT request template, GitHub settings, code
+changes, verification checklist): **[docs/DOMAIN-SETUP.md](docs/DOMAIN-SETUP.md)**
