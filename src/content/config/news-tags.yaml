@@ -3,7 +3,7 @@
 #
 #  规则：新闻的「标题或摘要」命中 include 中任一关键词（不区分
 #  大小写）即被收录；再命中 exclude 中任一关键词则被剔除。
-#  修改保存(commit)后，下一次定时抓取自动生效。
+#  修改保存 (commit) 后，下一次定时抓取自动生效。
 # ══════════════════════════════════════════════════════════════
 
 include:
@@ -23,6 +23,7 @@ include:
   - "Marie Thoma"
   - "Jioni Lewis"
   - "Alisa Clyne"
+  - "Ang Li"
 
 exclude: []
   # 例：出现误报时加关键词，如
@@ -49,6 +50,11 @@ sources:
     name: "College of Education"
     type: rss
     url: "https://education.umd.edu/rss.xml"
+    enabled: true
+  - id: umd-news
+    name: "UMD News"
+    type: rss
+    url: "https://news.umd.edu/rss.xml"
     enabled: true
 
 # 归档中最多保留的条数（超出后最旧的被移除）
