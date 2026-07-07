@@ -1,0 +1,129 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { formatDate } from '../utils';
+
+const events = (await getCollection('events')).sort((a, b) => +b.data.date - +a.data.date);
+const now = new Date();
+const upcoming = events.filter((e) => (e.data.endDate ?? e.data.date) >= now).reverse();
+const past = events.filter((e) => (e.data.endDate ?? e.data.date) < now);
+---
+
+<Base title="Events" description="WHIRC workshops, symposia, and community events.">
+  <div class="page-hero">
+    <div class="container"><h1>Events</h1></div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="section-heading">Upcoming Events</h2>
+      {upcoming.length === 0 ? (
+        <p class="empty">No upcoming events scheduled — check back soon.</p>
+      ) : (
+        <ul class="event-list">
+          {upcoming.map((e) => (
+            <li class="card event">
+              <div class="event-date">
+                <span class="event-month">
+                  {e.data.date.toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' })}
+                </span>
+                <span class="event-day">
+                  {e.data.date.toLocaleDateString('en-US', { day: 'numeric', timeZone: 'UTC' })}
+                </span>
+              </div>
+              <div class="event-body">
+                <h3>{e.data.title}</h3>
+                <p class="event-meta">
+                  {formatDate(e.data.date)}
+                  {e.data.location && <> · {e.data.location}</>}
+                </p>
+                {e.body && <p>{e.body}</p>}
+                {e.data.registration && (
+                  <a class="btn btn--primary" href={e.data.registration} rel="noopener">Register</a>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </section>
+
+  {past.length > 0 && (
+    <section class="section section--gray">
+      <div class="container">
+        <h2 class="section-heading">Past Events</h2>
+        <ul class="past-list">
+          {past.map((e) => (
+            <li>
+              <strong>{e.data.title}</strong> — {formatDate(e.data.date)}
+              {e.data.location && <> · {e.data.location}</>}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+</Base>
+
+<style>
+  .event-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    max-width: 780px;
+    margin-inline: auto;
+  }
+  .event {
+    display: flex;
+    gap: 1.25rem;
+    padding: 1.4rem;
+  }
+  .event-date {
+    flex-shrink: 0;
+    width: 74px;
+    height: 74px;
+    background: var(--umd-red);
+    color: var(--white);
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.1;
+  }
+  .event-month {
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--umd-gold);
+  }
+  .event-day {
+    font-family: var(--font-serif);
+    font-size: 1.9rem;
+    font-weight: 600;
+  }
+  .event-body h3 {
+    margin-bottom: 0.2rem;
+  }
+  .event-meta {
+    color: var(--gray-700);
+    font-size: 0.92rem;
+    margin: 0 0 0.5rem;
+  }
+  .past-list {
+    max-width: 780px;
+    margin: 0 auto;
+    color: var(--gray-700);
+  }
+  .past-list li {
+    margin-bottom: 0.5rem;
+  }
+  .empty {
+    text-align: center;
+    color: var(--gray-700);
+  }
+</style>

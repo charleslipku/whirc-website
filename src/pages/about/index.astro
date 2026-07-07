@@ -1,0 +1,45 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+const whoWeAre = await getEntry('pages', 'who-we-are');
+const whatWeDo = await getEntry('pages', 'what-we-do');
+if (!whoWeAre || !whatWeDo) throw new Error('Missing about-page content in src/content/pages/');
+const { Content: WhoWeAre } = await render(whoWeAre);
+const { Content: WhatWeDo } = await render(whatWeDo);
+---
+
+<Base title="About" description="About the Women's Health Interdisciplinary Research Collaborative at the University of Maryland.">
+  <div class="page-hero">
+    <div class="container">
+      <h1>About WHIRC</h1>
+    </div>
+  </div>
+
+  <section class="section" id="who-we-are">
+    <div class="container prose">
+      <h2 class="section-heading">{whoWeAre.data.title}</h2>
+      <WhoWeAre />
+    </div>
+  </section>
+
+  <section class="section section--gray" id="what-we-do">
+    <div class="container prose">
+      <h2 class="section-heading">{whatWeDo.data.title}</h2>
+      <WhatWeDo />
+    </div>
+  </section>
+</Base>
+
+<style is:global>
+  .page-hero {
+    background: linear-gradient(120deg, var(--umd-black), var(--umd-red-dark));
+    color: var(--white);
+    padding: 3rem 0;
+    border-bottom: 4px solid var(--umd-gold);
+  }
+  .page-hero h1 {
+    color: var(--white);
+    margin: 0;
+  }
+</style>

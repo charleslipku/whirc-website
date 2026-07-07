@@ -1,0 +1,94 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import NewsCard from '../../components/NewsCard.astro';
+import { url } from '../../utils';
+import externalNews from '../../data/external-news.json';
+
+const whircNews = (await getCollection('news')).sort(
+  (a, b) => +b.data.date - +a.data.date
+);
+const inTheNews = [...externalNews].sort((a, b) => +new Date(b.date) - +new Date(a.date));
+---
+
+<Base title="News" description="WHIRC news and University of Maryland coverage of women's health research.">
+  <div class="page-hero">
+    <div class="container"><h1>News</h1></div>
+  </div>
+
+  <section class="section" id="whirc-news">
+    <div class="container">
+      <h2 class="section-heading">WHIRC News</h2>
+      {whircNews.length === 0 ? (
+        <p class="empty">No news posted yet — check back soon.</p>
+      ) : (
+        <div class="news-grid">
+          {whircNews.map((entry) => (
+            <NewsCard
+              title={entry.data.title}
+              href={url(`/news/${entry.id}/`)}
+              date={entry.data.date}
+              image={entry.data.image}
+              excerpt={entry.data.excerpt}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section class="section section--gray" id="in-the-news">
+    <div class="container">
+      <h2 class="section-heading">In The News</h2>
+      <p class="section-sub">
+        Women's-health coverage automatically curated from official University of
+        Maryland news sources. Each story links to the original article.
+      </p>
+      {inTheNews.length === 0 ? (
+        <p class="empty">No stories matched yet — the news feed updates daily.</p>
+      ) : (
+        <div class="news-grid">
+          {inTheNews.map((item) => (
+            <NewsCard
+              title={item.title}
+              href={item.link}
+              date={item.date}
+              image={item.image ?? undefined}
+              excerpt={item.excerpt ?? undefined}
+              source={item.source}
+              external
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  @media (max-width: 1000px) {
+    .news-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 600px) {
+    .news-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .section-sub {
+    text-align: center;
+    color: var(--gray-700);
+    max-width: 640px;
+    margin: -1.25rem auto 2rem;
+  }
+  .empty {
+    text-align: center;
+    color: var(--gray-700);
+  }
+</style>

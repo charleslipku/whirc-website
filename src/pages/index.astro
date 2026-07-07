@@ -1,0 +1,284 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import NewsCard from '../components/NewsCard.astro';
+import { url } from '../utils';
+import { site } from '../site';
+import externalNews from '../data/external-news.json';
+
+// Latest news: merge manual WHIRC news + auto-fetched external items
+const whircNews = (await getCollection('news')).map((entry) => ({
+  title: entry.data.title,
+  date: entry.data.date,
+  image: entry.data.image,
+  excerpt: entry.data.excerpt,
+  href: url(`/news/${entry.id}/`),
+  external: false as const,
+  source: undefined as string | undefined,
+}));
+const inTheNews = externalNews.map((item) => ({
+  title: item.title,
+  date: new Date(item.date),
+  image: item.image ?? undefined,
+  excerpt: item.excerpt ?? undefined,
+  href: item.link,
+  external: true as const,
+  source: item.source as string | undefined,
+}));
+const latest = [...whircNews, ...inTheNews]
+  .sort((a, b) => +new Date(b.date) - +new Date(a.date))
+  .slice(0, 4);
+
+const pillars = [
+  {
+    title: 'Who We Are',
+    text: 'An interdisciplinary collaborative of nearly 100 faculty, staff, and trainees across the University of Maryland, united to close long-standing gaps in women’s health research.',
+    href: url('/about/#who-we-are'),
+    icon: '⚕',
+  },
+  {
+    title: 'What We Do',
+    text: 'We advance translational research, develop a diverse workforce pipeline, and build community partnerships that carry findings beyond academia into policy and practice.',
+    href: url('/about/#what-we-do'),
+    icon: '⚙',
+  },
+  {
+    title: 'Get Involved',
+    text: 'Join our network of researchers, students, and community partners. Explore collaboration, training, and funding opportunities in women’s health.',
+    href: url('/get-involved/'),
+    icon: '✉',
+  },
+];
+
+const stats = [
+  { value: '100+', label: 'Faculty, Staff & Trainees' },
+  { value: '4', label: 'Schools & Colleges' },
+  { value: '3', label: 'Research Pillars' },
+  { value: '50%+', label: 'Of the Population We Serve' },
+];
+---
+
+<Base>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-text">
+        <p class="hero-kicker">A UMD Grand Challenges Institutional Grant</p>
+        <h1>Women's Health Interdisciplinary Research Collaborative</h1>
+        <p class="hero-tagline">{site.tagline}</p>
+        <div class="hero-actions">
+          <a class="btn btn--primary" href={url('/about/')}>Learn More</a>
+          <a class="btn btn--outline" href={url('/get-involved/')}>Get Involved</a>
+        </div>
+      </div>
+      <img class="hero-mark" src={url('/images/logo-mark.png')} alt="" />
+    </div>
+  </section>
+
+  <!-- Three pillars -->
+  <section class="section">
+    <div class="container">
+      <div class="pillars">
+        {pillars.map((p) => (
+          <article class="card pillar">
+            <div class="pillar-icon" aria-hidden="true">{p.icon}</div>
+            <h2 class="pillar-title">{p.title}</h2>
+            <p>{p.text}</p>
+            <a class="pillar-link" href={p.href}>Learn More →</a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats bar -->
+  <section class="stats">
+    <div class="container stats-grid">
+      {stats.map((s) => (
+        <div class="stat">
+          <p class="stat-value">{s.value}</p>
+          <p class="stat-label">{s.label}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Latest news -->
+  <section class="section section--gray">
+    <div class="container">
+      <h2 class="section-heading">Latest News</h2>
+      <div class="news-grid">
+        {latest.map((item) => (
+          <NewsCard {...item} />
+        ))}
+      </div>
+      <p class="more-link">
+        <a class="btn btn--primary" href={url('/news/')}>View More News</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- Quote / mission -->
+  <section class="quote-band">
+    <div class="container">
+      <blockquote>
+        <p>
+          "Women have been underrepresented in clinical trials and health studies, creating
+          knowledge gaps about conditions that uniquely or disproportionately impact more than
+          half the population. WHIRC exists to change that."
+        </p>
+      </blockquote>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    background: linear-gradient(135deg, var(--umd-black) 0%, #4a1218 55%, var(--umd-red-dark) 100%);
+    color: var(--white);
+    padding: 4.5rem 0;
+    overflow: hidden;
+  }
+  .hero-inner {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+  }
+  .hero-text {
+    max-width: 640px;
+  }
+  .hero h1 {
+    color: var(--white);
+  }
+  .hero-kicker {
+    color: var(--umd-gold);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    margin: 0 0 0.75rem;
+  }
+  .hero-tagline {
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    color: var(--gray-100);
+    margin: 0.5rem 0 1.75rem;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+  }
+  .hero-mark {
+    width: 300px;
+    flex-shrink: 0;
+    filter: drop-shadow(0 8px 30px rgba(0, 0, 0, 0.45));
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 50%;
+    padding: 1.5rem;
+  }
+  @media (max-width: 860px) {
+    .hero-mark {
+      display: none;
+    }
+  }
+
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.75rem;
+  }
+  .pillar {
+    padding: 1.9rem 1.6rem;
+    display: flex;
+    flex-direction: column;
+    border-top: 5px solid var(--umd-gold);
+  }
+  .pillar-icon {
+    font-size: 2rem;
+    color: var(--umd-red);
+    line-height: 1;
+    margin-bottom: 0.6rem;
+  }
+  .pillar-title {
+    font-size: 1.45rem;
+  }
+  .pillar p {
+    color: var(--gray-700);
+    flex: 1;
+  }
+  .pillar-link {
+    font-weight: 700;
+  }
+  @media (max-width: 860px) {
+    .pillars {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .stats {
+    background: var(--umd-red);
+    color: var(--white);
+    padding: 2.4rem 0;
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    text-align: center;
+  }
+  .stat-value {
+    font-family: var(--font-serif);
+    font-size: 2.6rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--umd-gold);
+  }
+  .stat-label {
+    margin: 0.2rem 0 0;
+    font-size: 0.95rem;
+  }
+  @media (max-width: 700px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .news-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+  @media (max-width: 1000px) {
+    .news-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 600px) {
+    .news-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .more-link {
+    text-align: center;
+    margin-top: 2.25rem;
+  }
+
+  .quote-band {
+    background: var(--gray-50);
+    border-top: 4px solid var(--umd-gold);
+    padding: 3.5rem 0;
+  }
+  .quote-band blockquote {
+    margin: 0 auto;
+    max-width: 780px;
+    text-align: center;
+  }
+  .quote-band p {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    line-height: 1.5;
+    color: var(--umd-black);
+    margin: 0;
+  }
+</style>

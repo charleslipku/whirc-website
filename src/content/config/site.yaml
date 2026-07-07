@@ -1,0 +1,21 @@
+# ── 站点全局配置（团队成员可直接编辑）──────────────────
+title: "WHIRC — Women's Health Interdisciplinary Research Collaborative"
+shortName: "WHIRC"
+tagline: "Bridging Disciplines. Advancing Research and Education. Elevating Women's Health."
+description: >-
+  The Women's Health Interdisciplinary Research Collaborative (WHIRC) at the
+  University of Maryland fosters interdisciplinary research, educates future
+  leaders, and informs policy and practice to advance women's health across
+  the lifespan.
+contact:
+  email: "whirc@umd.edu"   # TODO: 替换为正式联系邮箱
+  address: "University of Maryland, College Park, MD 20742"
+social:
+  # 留空则页脚不显示对应图标；后期直接填 URL 即可
+  linkedin: ""
+  instagram: ""
+  twitter: ""
+links:
+  grandChallenges: "https://research.umd.edu/grand-challenges-grants/grand-challenges-2/institutional-grants-2.0/whirc"
+  accessibility: "https://www.umd.edu/web-accessibility"
+  privacy: "https://www.umd.edu/privacy-notice"

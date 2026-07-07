@@ -1,0 +1,61 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../site';
+---
+
+<Base title="Contact" description="Contact the Women's Health Interdisciplinary Research Collaborative.">
+  <div class="page-hero">
+    <div class="container"><h1>Contact</h1></div>
+  </div>
+
+  <section class="section">
+    <div class="container contact-grid">
+      <div class="card contact-card">
+        <h2>Get in Touch</h2>
+        <p>
+          For questions about WHIRC, collaboration opportunities, or media
+          inquiries, please email us:
+        </p>
+        <p class="contact-email">
+          <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+        </p>
+        <p class="contact-address">{site.contact.address}</p>
+      </div>
+
+      <div class="card contact-card">
+        <h2>Grand Challenges</h2>
+        <p>
+          WHIRC is funded through the University of Maryland Grand Challenges
+          Institutional Grant Program.
+        </p>
+        <a class="btn btn--primary" href={site.links.grandChallenges} rel="noopener">
+          View Official Project Page
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.75rem;
+    max-width: 900px;
+  }
+  .contact-card {
+    padding: 2rem;
+  }
+  .contact-email {
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
+  .contact-address {
+    color: var(--gray-700);
+  }
+  @media (max-width: 760px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

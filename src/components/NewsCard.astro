@@ -1,0 +1,89 @@
+---
+import { formatDate } from '../utils';
+
+interface Props {
+  title: string;
+  href: string;
+  date: Date | string;
+  image?: string;
+  excerpt?: string;
+  source?: string; // shown for external ("In The News") items
+  external?: boolean;
+}
+
+const { title, href, date, image, excerpt, source, external = false } = Astro.props;
+---
+
+<article class="card news-card">
+  <a
+    href={href}
+    class="news-card-link"
+    target={external ? '_blank' : undefined}
+    rel={external ? 'noopener' : undefined}
+  >
+    {image && <img class="news-card-img" src={image} alt="" loading="lazy" />}
+    <div class="news-card-body">
+      <p class="news-card-meta">
+        <time datetime={new Date(date).toISOString().slice(0, 10)}>{formatDate(date)}</time>
+        {source && <span class="news-card-source">{source}</span>}
+      </p>
+      <h3 class="news-card-title">{title}</h3>
+      {excerpt && <p class="news-card-excerpt">{excerpt}</p>}
+    </div>
+  </a>
+</article>
+
+<style>
+  .news-card-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    color: inherit;
+  }
+  .news-card-link:hover {
+    text-decoration: none;
+  }
+  .news-card-link:hover .news-card-title {
+    color: var(--umd-red);
+  }
+  .news-card-img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+  .news-card-body {
+    padding: 1.1rem 1.25rem 1.35rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .news-card-meta {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--gray-700);
+    display: flex;
+    gap: 0.6rem;
+    align-items: baseline;
+    flex-wrap: wrap;
+  }
+  .news-card-source {
+    background: var(--gray-100);
+    border-left: 3px solid var(--umd-gold);
+    padding: 0.05rem 0.5rem;
+    font-weight: 600;
+  }
+  .news-card-title {
+    font-size: 1.15rem;
+    margin: 0;
+    transition: color 0.15s;
+  }
+  .news-card-excerpt {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--gray-700);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

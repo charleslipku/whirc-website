@@ -1,0 +1,55 @@
+# ══════════════════════════════════════════════════════════════
+#  News 自动抓取配置 —— 团队成员可直接在 GitHub 网页上编辑本文件
+#
+#  规则：新闻的「标题或摘要」命中 include 中任一关键词（不区分
+#  大小写）即被收录；再命中 exclude 中任一关键词则被剔除。
+#  修改保存(commit)后，下一次定时抓取自动生效。
+# ══════════════════════════════════════════════════════════════
+
+include:
+  - "women's health"
+  - "women health"
+  - "womens health"
+  - "maternal health"
+  - "maternal mortality"
+  - "reproductive health"
+  - "pregnancy"
+  - "menopause"
+  - "breast cancer"
+  - "cervical cancer"
+  - "ovarian"
+  - "gendered racism"
+  - "WHIRC"
+  - "Marie Thoma"
+  - "Jioni Lewis"
+  - "Alisa Clyne"
+
+exclude: []
+  # 例：出现误报时加关键词，如
+  # - "athletics"
+
+# ── 数据源（enabled: false 可临时停用某个源）──────────────
+sources:
+  - id: maryland-today
+    name: "Maryland Today"
+    type: rss
+    url: "https://today.umd.edu/rss"
+    enabled: true
+  - id: sph
+    name: "School of Public Health"
+    type: rss
+    url: "https://sph.umd.edu/rss.xml"
+    enabled: true
+  - id: engineering
+    name: "Clark School of Engineering"
+    type: rss
+    url: "https://eng.umd.edu/rss.xml"
+    enabled: true
+  - id: education
+    name: "College of Education"
+    type: rss
+    url: "https://education.umd.edu/rss.xml"
+    enabled: true
+
+# 归档中最多保留的条数（超出后最旧的被移除）
+max_items: 100

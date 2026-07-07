@@ -1,0 +1,19 @@
+{
+  "name": "whirc-website",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "fetch-news": "node scripts/fetch-news.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/source-sans-3": "^5.2.0",
+    "@fontsource/crimson-pro": "^5.2.0",
+    "astro": "^5.0.0",
+    "fast-xml-parser": "^4.5.0",
+    "yaml": "^2.6.0"
+  }
+}

@@ -1,0 +1,193 @@
+---
+import { url } from '../utils';
+import { site } from '../site';
+
+const nav = [
+  {
+    label: 'About',
+    href: url('/about/'),
+    children: [
+      { label: 'Who We Are', href: url('/about/#who-we-are') },
+      { label: 'What We Do', href: url('/about/#what-we-do') },
+    ],
+  },
+  { label: 'People', href: url('/people/') },
+  { label: 'Research', href: url('/research/') },
+  {
+    label: 'News',
+    href: url('/news/'),
+    children: [
+      { label: 'WHIRC News', href: url('/news/#whirc-news') },
+      { label: 'In The News', href: url('/news/#in-the-news') },
+    ],
+  },
+  { label: 'Events', href: url('/events/') },
+  { label: 'Get Involved', href: url('/get-involved/') },
+  { label: 'Contact', href: url('/contact/') },
+];
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href={url('/')}>
+      <img src={url('/images/logo.png')} alt={`${site.shortName} — ${site.title}`} class="brand-logo" />
+    </a>
+
+    <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation">
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+    </button>
+
+    <nav id="site-nav" class="site-nav" aria-label="Main navigation">
+      <ul>
+        {nav.map((item) => (
+          <li class:list={['nav-item', { 'has-children': item.children }]}>
+            <a href={item.href}>{item.label}</a>
+            {item.children && (
+              <ul class="dropdown">
+                {item.children.map((child) => (
+                  <li><a href={child.href}>{child.label}</a></li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggle = document.querySelector('.nav-toggle');
+  const nav = document.getElementById('site-nav');
+  toggle?.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!open));
+    nav?.classList.toggle('is-open', !open);
+  });
+</script>
+
+<style>
+  .site-header {
+    background: var(--white);
+    border-bottom: 4px solid var(--umd-red);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    box-shadow: 0 1px 4px rgba(35, 31, 32, 0.08);
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 76px;
+  }
+  .brand-logo {
+    height: 58px;
+    width: auto;
+    display: block;
+  }
+
+  .site-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 0.25rem;
+  }
+  .nav-item {
+    position: relative;
+  }
+  .nav-item > a {
+    display: block;
+    padding: 0.6rem 0.8rem;
+    color: var(--umd-black);
+    font-weight: 600;
+    font-size: 0.98rem;
+    border-bottom: 3px solid transparent;
+  }
+  .nav-item > a:hover {
+    text-decoration: none;
+    border-bottom-color: var(--umd-gold);
+    color: var(--umd-red);
+  }
+
+  .dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 190px;
+    background: var(--white);
+    box-shadow: var(--shadow-card-hover);
+    border-radius: 0 0 var(--radius) var(--radius);
+    border-top: 3px solid var(--umd-gold);
+    flex-direction: column;
+    padding: 0.35rem 0;
+  }
+  .has-children:hover .dropdown,
+  .has-children:focus-within .dropdown {
+    display: flex;
+  }
+  .dropdown a {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: var(--umd-black);
+    font-size: 0.95rem;
+  }
+  .dropdown a:hover {
+    background: var(--gray-100);
+    text-decoration: none;
+  }
+
+  .nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+  }
+  .nav-toggle-bar {
+    display: block;
+    width: 26px;
+    height: 3px;
+    background: var(--umd-black);
+    margin: 5px 0;
+    border-radius: 2px;
+  }
+
+  @media (max-width: 920px) {
+    .nav-toggle {
+      display: block;
+    }
+    .site-nav {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--white);
+      border-bottom: 3px solid var(--umd-red);
+      box-shadow: var(--shadow-card-hover);
+    }
+    .site-nav.is-open {
+      display: block;
+    }
+    .site-nav ul {
+      flex-direction: column;
+      padding: 0.5rem 0;
+    }
+    .dropdown {
+      display: flex;
+      position: static;
+      box-shadow: none;
+      border-top: none;
+      padding-left: 1rem;
+    }
+    .brand-logo {
+      height: 48px;
+    }
+  }
+</style>

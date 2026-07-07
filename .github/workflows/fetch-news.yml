@@ -1,0 +1,33 @@
+name: Fetch UMD News
+
+on:
+  schedule:
+    # 每天 UTC 11:00（美东上午 6/7 点）
+    - cron: '0 11 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run fetch-news
+      - name: Commit if changed
+        run: |
+          if git diff --quiet src/data/external-news.json; then
+            echo "No new matching news."
+            exit 0
+          fi
+          git config user.name "whirc-news-bot"
+          git config user.email "actions@github.com"
+          git add src/data/external-news.json
+          git commit -m "chore(news): auto-update In The News feed"
+          git push

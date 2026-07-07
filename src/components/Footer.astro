@@ -1,0 +1,133 @@
+---
+import { url } from '../utils';
+import { site } from '../site';
+
+const year = new Date().getFullYear();
+const socials = [
+  { key: 'linkedin', label: 'LinkedIn', href: site.social.linkedin },
+  { key: 'instagram', label: 'Instagram', href: site.social.instagram },
+  { key: 'twitter', label: 'X (Twitter)', href: site.social.twitter },
+].filter((s) => s.href);
+---
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <img src={url('/images/logo-mark.png')} alt="" class="footer-mark" />
+      <p class="footer-name">{site.shortName}</p>
+      <p class="footer-tagline">{site.tagline}</p>
+    </div>
+
+    <div>
+      <h3>Contact</h3>
+      <p>
+        <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a><br />
+        {site.contact.address}
+      </p>
+      {socials.length > 0 && (
+        <p class="footer-social">
+          {socials.map((s) => (
+            <a href={s.href} rel="noopener">{s.label}</a>
+          ))}
+        </p>
+      )}
+    </div>
+
+    <div>
+      <h3>Links</h3>
+      <ul class="footer-links">
+        <li><a href={site.links.grandChallenges} rel="noopener">UMD Grand Challenges</a></li>
+        <li><a href="https://umd.edu" rel="noopener">University of Maryland</a></li>
+        <li><a href={site.links.accessibility} rel="noopener">Web Accessibility</a></li>
+        <li><a href={site.links.privacy} rel="noopener">Privacy Notice</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="container">
+      <p>© {year} Women's Health Interdisciplinary Research Collaborative · University of Maryland</p>
+      <p class="footer-award">A UMD Grand Challenges Institutional Grant Program</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--umd-black);
+    color: var(--gray-100);
+    margin-top: 4rem;
+  }
+  .site-footer h3 {
+    color: var(--umd-gold);
+    font-size: 1.1rem;
+    margin-bottom: 0.6rem;
+  }
+  .site-footer a {
+    color: var(--gray-100);
+    text-decoration: underline;
+    text-decoration-color: rgba(255, 255, 255, 0.3);
+  }
+  .site-footer a:hover {
+    color: var(--umd-gold);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1fr;
+    gap: 2.5rem;
+    padding-top: 3rem;
+    padding-bottom: 2.5rem;
+  }
+  .footer-mark {
+    height: 72px;
+    width: auto;
+    background: var(--white);
+    border-radius: 50%;
+    padding: 6px;
+  }
+  .footer-name {
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0.75rem 0 0.25rem;
+    color: var(--white);
+  }
+  .footer-tagline {
+    font-size: 0.95rem;
+    color: var(--gray-400);
+    margin: 0;
+  }
+  .footer-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .footer-links li {
+    margin-bottom: 0.4rem;
+  }
+  .footer-social {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 1rem 0;
+    font-size: 0.88rem;
+    color: var(--gray-400);
+  }
+  .footer-bottom p {
+    margin: 0.15rem 0;
+  }
+  .footer-award {
+    color: var(--umd-gold);
+  }
+
+  @media (max-width: 760px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+  }
+</style>

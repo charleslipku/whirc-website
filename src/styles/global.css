@@ -1,0 +1,199 @@
+/* ============================================
+   WHIRC design tokens — UMD brand palette
+   https://brand.umd.edu
+   ============================================ */
+:root {
+  --umd-red: #e21833;
+  --umd-red-dark: #a90f22;
+  --umd-gold: #ffd200;
+  --umd-black: #231f20;
+  --gray-700: #54585a;
+  --gray-400: #9ea2a4;
+  --gray-100: #f1f1f1;
+  --gray-50: #f8f8f8;
+  --white: #ffffff;
+
+  --font-serif: 'Crimson Pro', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Source Sans 3 Variable', 'Source Sans 3', -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+
+  --max-width: 1200px;
+  --radius: 6px;
+  --shadow-card: 0 2px 8px rgba(35, 31, 32, 0.1);
+  --shadow-card-hover: 0 6px 20px rgba(35, 31, 32, 0.16);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--umd-black);
+  background: var(--white);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--umd-black);
+  margin: 0 0 0.5em;
+}
+
+h1 { font-size: clamp(2.2rem, 5vw, 3.2rem); }
+h2 { font-size: clamp(1.7rem, 3.5vw, 2.3rem); }
+h3 { font-size: 1.35rem; }
+
+a {
+  color: var(--umd-red);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Layout helpers */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+.section {
+  padding: 3.5rem 0;
+}
+
+.section--gray {
+  background: var(--gray-50);
+}
+
+.section-heading {
+  text-align: center;
+  margin-bottom: 2.25rem;
+}
+.section-heading::after {
+  content: '';
+  display: block;
+  width: 64px;
+  height: 4px;
+  background: var(--umd-gold);
+  margin: 0.75rem auto 0;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 0.7rem 1.6rem;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  transition: background 0.2s, color 0.2s;
+}
+.btn--primary {
+  background: var(--umd-red);
+  color: var(--white);
+}
+.btn--primary:hover {
+  background: var(--umd-red-dark);
+  text-decoration: none;
+}
+.btn--outline {
+  border: 2px solid var(--white);
+  color: var(--white);
+}
+.btn--outline:hover {
+  background: var(--white);
+  color: var(--umd-black);
+  text-decoration: none;
+}
+
+/* Cards */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.card:hover {
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-3px);
+}
+
+/* Prose (rendered markdown) */
+.prose {
+  max-width: 46rem;
+  margin: 0 auto;
+}
+.prose h2 {
+  margin-top: 2rem;
+}
+.prose h2::after {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 3px;
+  background: var(--umd-gold);
+  margin-top: 0.4rem;
+}
+.prose ul {
+  padding-left: 1.4rem;
+}
+.prose img {
+  border-radius: var(--radius);
+}
+.prose blockquote {
+  border-left: 4px solid var(--umd-gold);
+  margin-left: 0;
+  padding-left: 1.25rem;
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  color: var(--gray-700);
+}
+
+/* Accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+:focus-visible {
+  outline: 3px solid var(--umd-gold);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  top: -48px;
+  left: 8px;
+  z-index: 100;
+  background: var(--umd-black);
+  color: var(--white);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  transition: top 0.15s;
+}
+.skip-link:focus {
+  top: 8px;
+}

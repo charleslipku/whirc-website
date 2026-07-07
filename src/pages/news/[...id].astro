@@ -1,0 +1,47 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { formatDate, url } from '../../utils';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('news');
+  return posts.map((post) => ({ params: { id: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<Base title={post.data.title} description={post.data.excerpt}>
+  <div class="page-hero">
+    <div class="container">
+      <p class="post-date">{formatDate(post.data.date)}</p>
+      <h1>{post.data.title}</h1>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container prose">
+      {post.data.image && <img class="post-image" src={post.data.image} alt="" />}
+      <Content />
+      <p class="back-link"><a href={url('/news/')}>← Back to News</a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .post-date {
+    color: var(--umd-gold);
+    font-weight: 700;
+    margin: 0 0 0.4rem;
+  }
+  .post-image {
+    width: 100%;
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+  }
+  .back-link {
+    margin-top: 2.5rem;
+    font-weight: 600;
+  }
+</style>

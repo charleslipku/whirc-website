@@ -1,0 +1,56 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PersonCard from '../components/PersonCard.astro';
+
+const people = await getCollection('people');
+const byOrder = (a: (typeof people)[number], b: (typeof people)[number]) =>
+  a.data.order - b.data.order || a.data.name.localeCompare(b.data.name);
+
+const groups = [
+  { key: 'leadership', title: 'Leadership' },
+  { key: 'faculty', title: 'Affiliated Faculty' },
+  { key: 'students', title: 'Students & Trainees' },
+] as const;
+---
+
+<Base title="People" description="The WHIRC leadership team and affiliated researchers.">
+  <div class="page-hero">
+    <div class="container"><h1>People</h1></div>
+  </div>
+
+  {groups.map((group) => {
+    const members = people.filter((p) => p.data.group === group.key).sort(byOrder);
+    if (members.length === 0) return null;
+    return (
+      <section class="section">
+        <div class="container">
+          <h2 class="section-heading">{group.title}</h2>
+          <div class="people-grid">
+            {members.map((p) => (
+              <PersonCard {...p.data} />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  })}
+</Base>
+
+<style>
+  .people-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.75rem;
+  }
+  @media (max-width: 1000px) {
+    .people-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 560px) {
+    .people-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

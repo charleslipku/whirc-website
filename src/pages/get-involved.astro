@@ -1,0 +1,19 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const page = await getEntry('pages', 'get-involved');
+if (!page) throw new Error('Missing src/content/pages/get-involved.md');
+const { Content } = await render(page);
+---
+
+<Base title={page.data.title} description={page.data.subtitle}>
+  <div class="page-hero">
+    <div class="container"><h1>{page.data.title}</h1></div>
+  </div>
+  <section class="section">
+    <div class="container prose">
+      <Content />
+    </div>
+  </section>
+</Base>

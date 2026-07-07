@@ -1,0 +1,79 @@
+---
+import { url } from '../utils';
+
+interface Props {
+  name: string;
+  role: string;
+  title: string;
+  school?: string;
+  photo?: string;
+  website?: string;
+}
+
+const { name, role, title, school, photo, website } = Astro.props;
+const placeholder = url('/images/logo-mark.png');
+---
+
+<article class="card person-card">
+  <img
+    class:list={['person-photo', { 'person-photo--placeholder': !photo }]}
+    src={photo ?? placeholder}
+    alt={photo ? `Portrait of ${name}` : ''}
+    loading="lazy"
+  />
+  <div class="person-body">
+    <p class="person-role">{role}</p>
+    <h3 class="person-name">
+      {website ? <a href={website} rel="noopener">{name}</a> : name}
+    </h3>
+    <p class="person-title">{title}</p>
+    {school && <p class="person-school">{school}</p>}
+  </div>
+</article>
+
+<style>
+  .person-card {
+    text-align: center;
+  }
+  .person-photo {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+  }
+  .person-photo--placeholder {
+    object-fit: contain;
+    padding: 18%;
+    opacity: 0.35;
+    background: var(--gray-50);
+  }
+  .person-body {
+    padding: 1rem 1.1rem 1.3rem;
+  }
+  .person-role {
+    margin: 0 0 0.3rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--umd-red);
+  }
+  .person-name {
+    margin: 0 0 0.25rem;
+    font-size: 1.25rem;
+  }
+  .person-name a {
+    color: inherit;
+  }
+  .person-name a:hover {
+    color: var(--umd-red);
+  }
+  .person-title,
+  .person-school {
+    margin: 0;
+    font-size: 0.92rem;
+    color: var(--gray-700);
+  }
+  .person-school {
+    font-style: italic;
+  }
+</style>
