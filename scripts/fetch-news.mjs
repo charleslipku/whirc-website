@@ -124,6 +124,7 @@ async function main() {
   const include = config.include ?? [];
   const exclude = config.exclude ?? [];
   const maxItems = config.max_items ?? 100;
+  const minDate = config.min_date ?? null;
   const sources = (config.sources ?? []).filter((s) => s.enabled !== false);
 
   if (include.length === 0) {
@@ -156,6 +157,12 @@ async function main() {
           matchesKeywords(`${n.title} ${n.excerpt}`, include, exclude)
         );
         console.log(`[${source.id}] ${items.length} 条，命中 ${matched.length} 条`);
+      }
+      if (minDate) {
+        const before = matched.length;
+        matched = matched.filter((n) => n.date >= minDate);
+        if (before > matched.length)
+          console.log(`[${source.id}] 早于 ${minDate} 的 ${before - matched.length} 条已过滤`);
       }
       collected.push(...matched);
     } catch (err) {
