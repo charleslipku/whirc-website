@@ -11,8 +11,23 @@ const nav = [
       { label: 'What We Do', href: url('/about/#what-we-do') },
     ],
   },
-  { label: 'People', href: url('/people/') },
-  { label: 'Research', href: url('/research/') },
+  {
+    label: 'People',
+    href: url('/people/'),
+    children: [
+      { label: 'Leadership', href: url('/people/#leadership') },
+      { label: 'Affiliated Faculty', href: url('/people/#faculty') },
+      { label: 'Students & Trainees', href: url('/people/#students') },
+    ],
+  },
+  {
+    label: 'Research',
+    href: url('/research/'),
+    children: [
+      { label: 'Focus Areas', href: url('/research/#focus-areas') },
+      { label: 'Publications & Projects', href: url('/research/#publications--projects') },
+    ],
+  },
   {
     label: 'News',
     href: url('/news/'),
@@ -21,8 +36,24 @@ const nav = [
       { label: 'In The News', href: url('/news/#in-the-news') },
     ],
   },
-  { label: 'Events', href: url('/events/') },
-  { label: 'Get Involved', href: url('/get-involved/') },
+  {
+    label: 'Events',
+    href: url('/events/'),
+    children: [
+      { label: 'Upcoming Events', href: url('/events/#upcoming') },
+      { label: 'Past Events', href: url('/events/#past') },
+    ],
+  },
+  {
+    label: 'Get Involved',
+    href: url('/get-involved/'),
+    children: [
+      { label: 'Faculty & Researchers', href: url('/get-involved/#for-faculty--researchers') },
+      { label: 'Students & Trainees', href: url('/get-involved/#for-students--trainees') },
+      { label: 'Community Partners', href: url('/get-involved/#for-community-partners') },
+      { label: 'Support WHIRC', href: url('/get-involved/#support-whirc') },
+    ],
+  },
   { label: 'Contact', href: url('/contact/') },
 ];
 ---
@@ -66,6 +97,17 @@ const nav = [
     toggle.setAttribute('aria-expanded', String(!open));
     nav?.classList.toggle('is-open', !open);
   });
+
+  // 点击菜单链接后移除焦点，避免 :focus-within 让下拉菜单卡住不收回
+  // （同页锚点跳转不刷新页面，焦点会一直停留在链接上）
+  nav?.querySelectorAll('a').forEach((a) => {
+    a.addEventListener('click', () => {
+      (document.activeElement as HTMLElement | null)?.blur();
+      // 移动端：点击后收起整个菜单
+      nav.classList.remove('is-open');
+      toggle?.setAttribute('aria-expanded', 'false');
+    });
+  });
 </script>
 
 <style>
@@ -81,31 +123,37 @@ const nav = [
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem;
-    min-height: 76px;
+    gap: 1.5rem;
+    min-height: 108px;
   }
   .brand-logo {
-    height: 58px;
+    height: 88px;
     width: auto;
     display: block;
   }
 
-  .site-nav ul {
+  /* 注意 “>” 只作用于顶层菜单，避免命中嵌套的 .dropdown ul（会把下拉菜单永久撑开） */
+  .site-nav > ul {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
-    gap: 0.25rem;
+    gap: 0.15rem;
+  }
+  .dropdown,
+  .dropdown li {
+    list-style: none;
+    margin: 0;
   }
   .nav-item {
     position: relative;
   }
   .nav-item > a {
     display: block;
-    padding: 0.6rem 0.8rem;
+    padding: 0.85rem 0.85rem;
     color: var(--umd-black);
     font-weight: 600;
-    font-size: 0.98rem;
+    font-size: 1.02rem;
     border-bottom: 3px solid transparent;
   }
   .nav-item > a:hover {
@@ -119,7 +167,7 @@ const nav = [
     position: absolute;
     top: 100%;
     left: 0;
-    min-width: 190px;
+    min-width: 230px;
     background: var(--white);
     box-shadow: var(--shadow-card-hover);
     border-radius: 0 0 var(--radius) var(--radius);
@@ -133,12 +181,13 @@ const nav = [
   }
   .dropdown a {
     display: block;
-    padding: 0.5rem 1rem;
+    padding: 0.55rem 1.1rem;
     color: var(--umd-black);
-    font-size: 0.95rem;
+    font-size: 0.96rem;
   }
   .dropdown a:hover {
     background: var(--gray-100);
+    color: var(--umd-red);
     text-decoration: none;
   }
 
@@ -151,16 +200,19 @@ const nav = [
   }
   .nav-toggle-bar {
     display: block;
-    width: 26px;
+    width: 28px;
     height: 3px;
     background: var(--umd-black);
-    margin: 5px 0;
+    margin: 6px 0;
     border-radius: 2px;
   }
 
-  @media (max-width: 920px) {
+  @media (max-width: 1080px) {
     .nav-toggle {
       display: block;
+    }
+    .header-inner {
+      min-height: 84px;
     }
     .site-nav {
       display: none;
@@ -171,11 +223,13 @@ const nav = [
       background: var(--white);
       border-bottom: 3px solid var(--umd-red);
       box-shadow: var(--shadow-card-hover);
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
     }
     .site-nav.is-open {
       display: block;
     }
-    .site-nav ul {
+    .site-nav > ul {
       flex-direction: column;
       padding: 0.5rem 0;
     }
@@ -187,7 +241,7 @@ const nav = [
       padding-left: 1rem;
     }
     .brand-logo {
-      height: 48px;
+      height: 62px;
     }
   }
 </style>

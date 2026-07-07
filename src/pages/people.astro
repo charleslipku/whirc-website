@@ -23,7 +23,7 @@ const groups = [
     const members = people.filter((p) => p.data.group === group.key).sort(byOrder);
     if (members.length === 0) return null;
     return (
-      <section class="section">
+      <section class="section" id={group.key}>
         <div class="container">
           <h2 class="section-heading">{group.title}</h2>
           <div class="people-grid">

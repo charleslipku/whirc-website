@@ -14,7 +14,7 @@ const past = events.filter((e) => (e.data.endDate ?? e.data.date) < now);
     <div class="container"><h1>Events</h1></div>
   </div>
 
-  <section class="section">
+  <section class="section" id="upcoming">
     <div class="container">
       <h2 class="section-heading">Upcoming Events</h2>
       {upcoming.length === 0 ? (
@@ -50,7 +50,7 @@ const past = events.filter((e) => (e.data.endDate ?? e.data.date) < now);
   </section>
 
   {past.length > 0 && (
-    <section class="section section--gray">
+    <section class="section section--gray" id="past">
       <div class="container">
         <h2 class="section-heading">Past Events</h2>
         <ul class="past-list">
