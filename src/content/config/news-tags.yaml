@@ -31,6 +31,15 @@ exclude: []
 
 # ── 数据源（enabled: false 可临时停用某个源）──────────────
 sources:
+  # ── umd-topic 类型：Maryland Today 编辑策划的专题页 ──
+  # 条目由编辑人工归类（天然相关），不做 include 关键词过滤，
+  # 仍应用 exclude 与 min_date
+  - id: mt-womens-health
+    name: "Maryland Today · Women's Health"
+    type: umd-topic
+    url: "https://today.umd.edu/topic/womens-health"
+    enabled: true
+
   - id: maryland-today
     name: "Maryland Today"
     type: rss

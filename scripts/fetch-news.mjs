@@ -119,6 +119,44 @@ async function fetchNewsengine(source, include) {
   return results;
 }
 
+/**
+ * Maryland Today 专题页（如 /topic/womens-health）：无专用 RSS，
+ * 解析页面中的 <umd-element-article> 条目。专题由编辑人工策划，
+ * 条目天然相关，不再做 include 关键词过滤（仍应用 exclude 与 min_date）。
+ */
+async function fetchUmdTopic(source) {
+  const res = await fetch(source.url, {
+    headers: { 'user-agent': 'WHIRC-news-bot (whirc.umd.edu; academic site)' },
+    signal: AbortSignal.timeout(30_000),
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const html = await res.text();
+
+  const results = [];
+  for (const block of html.split(/<umd-element-article\b/).slice(1)) {
+    const chunk = block.slice(0, block.indexOf('</umd-element-article>'));
+    const headline = chunk.match(
+      /slot="headline">\s*<a\s+href="([^"]+)"[^>]*>\s*<span[^>]*>([^<]+)<\/span>/s
+    );
+    const dateM = chunk.match(/slot="date">\s*([^<]+?)\s*</s);
+    if (!headline || !dateM) continue;
+    const date = new Date(dateM[1]);
+    if (Number.isNaN(+date)) continue;
+    const text = chunk.match(/slot="text">\s*([^<]+?)\s*</s);
+    const img = chunk.match(/<img\s+src="([^"]+)"/);
+    results.push({
+      title: cleanText(headline[2]),
+      link: headline[1],
+      date: date.toISOString().slice(0, 10),
+      excerpt: cleanText(text?.[1] ?? '').slice(0, 280),
+      image: img ? img[1].replace(/&amp;/g, '&') : null,
+      source: source.name,
+      sourceId: source.id,
+    });
+  }
+  return results;
+}
+
 async function main() {
   const config = parseYaml(await readFile(CONFIG_PATH, 'utf8'));
   const include = config.include ?? [];
@@ -143,7 +181,14 @@ async function main() {
   for (const source of sources) {
     try {
       let matched;
-      if (source.type === 'newsengine') {
+      if (source.type === 'umd-topic') {
+        // 编辑策划的专题页：条目天然相关，只过 exclude
+        const items = await fetchUmdTopic(source);
+        matched = items.filter(
+          (n) => !exclude.some((k) => `${n.title} ${n.excerpt}`.toLowerCase().includes(k.toLowerCase()))
+        );
+        console.log(`[${source.id}] 专题页解析 ${items.length} 条，收录 ${matched.length} 条`);
+      } else if (source.type === 'newsengine') {
         // 引擎的全文搜索是 OR 式的（结果过泛），需再用分词匹配收紧：
         // 关键词的所有词都出现在标题/摘要中才收录
         const items = await fetchNewsengine(source, include);

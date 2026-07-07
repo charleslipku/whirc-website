@@ -1,5 +1,14 @@
 [
   {
+    "title": "Grand Challenges Grants 2.0 Direct UMD Research to Societal Good",
+    "link": "https://today.umd.edu/grand-challenges-grants-2-0-direct-umd-research-to-societal-good",
+    "date": "2026-06-25",
+    "excerpt": "Program Awards Nearly $15M in Grants, Building on Success of Inaugural Round",
+    "image": "https://umd-today.transforms.svdcdn.com/production/es/heroes/thumbnails/M_SouthCampusCommons_08302022_SC_4496_1920x1080_thumb_1782403632.jpg?w=1920&h=1080&auto=compress%2Cformat&fit=crop&dm=1782403632&s=fdb5697936ac38ff6ff61d06354c085f",
+    "source": "Maryland Today · Women's Health",
+    "sourceId": "mt-womens-health"
+  },
+  {
     "title": "Alisa Morss Clyne Named Interim Chair of UMD Bioengineering",
     "link": "https://bioe.umd.edu/news/story/alisa-morss-clyne-named-interim-chair-of-umd-bioengineering",
     "date": "2026-06-15",
@@ -7,5 +16,32 @@
     "image": null,
     "source": "Fischell Department of Bioengineering",
     "sourceId": "bioe"
+  },
+  {
+    "title": "Researcher Pursues Cure to Lung Disease That Steals Decades From Women’s Lives",
+    "link": "https://today.umd.edu/researcher-pursues-cure-to-lung-disease-that-steals-decades-from-womens-lives",
+    "date": "2026-02-23",
+    "excerpt": "UMD Research Changes Lives: Rare, Suffocating Disease Shares Characteristics With Cancer",
+    "image": "https://umd-today.transforms.svdcdn.com/production/es/heroes/thumbnails/MaiselKatharina_02202026_SC_8071_1920x1080_thumb_1771614046.jpg?w=1920&h=1080&auto=compress%2Cformat&fit=crop&dm=1771614046&s=f8caf8b8753f7d38ee09ce2104cf45d1",
+    "source": "Maryland Today · Women's Health",
+    "sourceId": "mt-womens-health"
+  },
+  {
+    "title": "Study Finds Fracture in Osteoporosis Care",
+    "link": "https://today.umd.edu/study-finds-fracture-in-osteoporosis-care",
+    "date": "2026-02-09",
+    "excerpt": "National Gap in Follow-up Therapy Can Erase Gains After Initial Treatment",
+    "image": "https://umd-today.transforms.svdcdn.com/production/es/heroes/thumbnails/AdobeStock_163664185_1920x1080-1_thumb_1770405098.jpg?w=1920&h=1080&auto=compress%2Cformat&fit=crop&dm=1770405098&s=820c413d570e1359b0a3d288c2908738",
+    "source": "Maryland Today · Women's Health",
+    "sourceId": "mt-womens-health"
+  },
+  {
+    "title": "Struggling With Fibroids, UMD Researcher Seeks to Engineer a Treatment",
+    "link": "https://today.umd.edu/struggling-with-fibroids-umd-researcher-seeks-to-engineer-a-treatment",
+    "date": "2026-02-03",
+    "excerpt": "UMD Research Changes Lives: Innovative Project Produces Lab-Grown Model of Understudied Uterine Tumors",
+    "image": "https://umd-today.transforms.svdcdn.com/production/es/heroes/thumbnails/MooreErika_Fibroids_12052025_SC_8197_1920x1080_thumb_1769203198.jpg?w=1920&h=1080&auto=compress%2Cformat&fit=crop&dm=1769203198&s=c40a79eead1f9982ed074b58137e28de",
+    "source": "Maryland Today · Women's Health",
+    "sourceId": "mt-womens-health"
   }
 ]
