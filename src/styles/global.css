@@ -31,6 +31,11 @@ html {
   scroll-behavior: smooth;
 }
 
+/* 锚点跳转时预留 sticky 页头的高度，避免目标被页头遮住 */
+[id] {
+  scroll-margin-top: 130px;
+}
+
 body {
   margin: 0;
   font-family: var(--font-sans);

@@ -1,0 +1,53 @@
+---
+/** 概览页上的子栏目导航卡片 */
+interface Props {
+  items: { title: string; text: string; href: string }[];
+}
+const { items } = Astro.props;
+---
+
+<div class="section-cards">
+  {items.map((item) => (
+    <a class="card section-card" href={item.href}>
+      <h2>{item.title}</h2>
+      <p>{item.text}</p>
+      <span class="section-card-link">Learn More →</span>
+    </a>
+  ))}
+</div>
+
+<style>
+  .section-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.75rem;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+  .section-card {
+    display: flex;
+    flex-direction: column;
+    padding: 1.9rem 1.6rem;
+    border-top: 5px solid var(--umd-gold);
+    color: inherit;
+  }
+  .section-card:hover {
+    text-decoration: none;
+  }
+  .section-card:hover h2 {
+    color: var(--umd-red);
+  }
+  .section-card h2 {
+    font-size: 1.45rem;
+    transition: color 0.15s;
+  }
+  .section-card p {
+    color: var(--gray-700);
+    flex: 1;
+    margin-top: 0;
+  }
+  .section-card-link {
+    font-weight: 700;
+    color: var(--umd-red);
+  }
+</style>

@@ -55,7 +55,7 @@ sources:
     name: "UMD News"
     type: rss
     url: "https://news.umd.edu/rss.xml"
-    enabled: true
+    enabled: false   # ⚠️ news.umd.edu 域名不存在（2026-07 验证）；UMD 主新闻源即上方 Maryland Today
 
 # 归档中最多保留的条数（超出后最旧的被移除）
 max_items: 100

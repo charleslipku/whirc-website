@@ -1,0 +1,63 @@
+---
+/** 渲染 src/content/pages/ 下的一个 markdown 条目为标准内页 */
+import { getEntry, render } from 'astro:content';
+import Base from './Base.astro';
+
+interface Props {
+  slug: string;
+  /** 面包屑：上级页面（可选） */
+  parent?: { label: string; href: string };
+}
+
+const { slug, parent } = Astro.props;
+const page = await getEntry('pages', slug);
+if (!page) throw new Error(`Missing src/content/pages/${slug}.md`);
+const { Content } = await render(page);
+---
+
+<Base title={page.data.title} description={page.data.subtitle}>
+  <div class="page-hero">
+    <div class="container">
+      {parent && (
+        <p class="breadcrumb">
+          <a href={parent.href}>{parent.label}</a> /
+        </p>
+      )}
+      <h1>{page.data.title}</h1>
+      {page.data.subtitle && <p class="page-subtitle">{page.data.subtitle}</p>}
+    </div>
+  </div>
+  <section class="section">
+    <div class="container prose">
+      <Content />
+    </div>
+  </section>
+  <slot />
+</Base>
+
+<style is:global>
+  .page-hero {
+    background: linear-gradient(120deg, var(--umd-black), var(--umd-red-dark));
+    color: var(--white);
+    padding: 3rem 0;
+    border-bottom: 4px solid var(--umd-gold);
+  }
+  .page-hero h1 {
+    color: var(--white);
+    margin: 0;
+  }
+  .page-hero .breadcrumb {
+    margin: 0 0 0.3rem;
+    font-size: 0.9rem;
+  }
+  .page-hero .breadcrumb a {
+    color: var(--umd-gold);
+    font-weight: 600;
+  }
+  .page-hero .page-subtitle {
+    margin: 0.5rem 0 0;
+    color: var(--gray-100);
+    font-family: var(--font-serif);
+    font-size: 1.2rem;
+  }
+</style>

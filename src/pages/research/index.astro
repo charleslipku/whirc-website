@@ -1,0 +1,26 @@
+---
+import MarkdownPage from '../../layouts/MarkdownPage.astro';
+import SectionCards from '../../components/SectionCards.astro';
+import { url } from '../../utils';
+---
+
+<MarkdownPage slug="research">
+  <section class="section section--gray">
+    <div class="container">
+      <SectionCards
+        items={[
+          {
+            title: 'Focus Areas',
+            text: 'Maternal & reproductive health, gendered stress, cardiovascular health, and AI for women’s health.',
+            href: url('/research/focus-areas/'),
+          },
+          {
+            title: 'Publications & Projects',
+            text: 'Publications, funded projects, and datasets from WHIRC-affiliated researchers.',
+            href: url('/research/publications/'),
+          },
+        ]}
+      />
+    </div>
+  </section>
+</MarkdownPage>

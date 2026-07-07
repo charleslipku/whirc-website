@@ -8,9 +8,23 @@ const byOrder = (a: (typeof people)[number], b: (typeof people)[number]) =>
   a.data.order - b.data.order || a.data.name.localeCompare(b.data.name);
 
 const groups = [
-  { key: 'leadership', title: 'Leadership' },
-  { key: 'faculty', title: 'Affiliated Faculty' },
-  { key: 'students', title: 'Students & Trainees' },
+  {
+    key: 'leadership',
+    title: 'Leadership',
+    empty: 'Leadership profiles will be posted soon.',
+  },
+  {
+    key: 'faculty',
+    title: 'Affiliated Faculty',
+    empty:
+      'WHIRC brings together nearly 100 affiliated faculty across the University of Maryland. The full directory is being compiled and will be published here soon.',
+  },
+  {
+    key: 'students',
+    title: 'Students & Trainees',
+    empty:
+      'Profiles of graduate assistants, students, and trainees working with WHIRC will be added soon.',
+  },
 ] as const;
 ---
 
@@ -19,18 +33,21 @@ const groups = [
     <div class="container"><h1>People</h1></div>
   </div>
 
-  {groups.map((group) => {
+  {groups.map((group, i) => {
     const members = people.filter((p) => p.data.group === group.key).sort(byOrder);
-    if (members.length === 0) return null;
     return (
-      <section class="section" id={group.key}>
+      <section class:list={['section', { 'section--gray': i % 2 === 1 }]} id={group.key}>
         <div class="container">
           <h2 class="section-heading">{group.title}</h2>
-          <div class="people-grid">
-            {members.map((p) => (
-              <PersonCard {...p.data} />
-            ))}
-          </div>
+          {members.length === 0 ? (
+            <p class="empty">{group.empty}</p>
+          ) : (
+            <div class="people-grid">
+              {members.map((p) => (
+                <PersonCard {...p.data} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
     );
@@ -52,5 +69,11 @@ const groups = [
     .people-grid {
       grid-template-columns: 1fr;
     }
+  }
+  .empty {
+    text-align: center;
+    color: var(--gray-700);
+    max-width: 620px;
+    margin: 0 auto;
   }
 </style>
