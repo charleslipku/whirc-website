@@ -18,7 +18,7 @@ a University of Maryland [Grand Challenges Institutional Grant](https://research
 
 ```bash
 npm install
-npm run dev        # http://localhost:4321/whirc-website/
+npm run dev        # http://localhost:4321/
 npm run build      # production build → dist/
 npm run fetch-news # manually run the news fetcher
 ```
@@ -29,7 +29,7 @@ Every push to `main` triggers `.github/workflows/deploy.yml` → GitHub Pages.
 The news fetcher (`.github/workflows/fetch-news.yml`) runs daily at 11:00 UTC
 and commits updates to `src/data/external-news.json` when new stories match.
 
-### Moving to the custom domain (womenshealth.umd.edu)
+### Custom domain
 
-Full step-by-step guide (DIT request template, GitHub settings, code
-changes, verification checklist): **[docs/DOMAIN-SETUP.md](docs/DOMAIN-SETUP.md)**
+Live at **https://womenshealth.umd.edu** (migrated 2026-07; see
+[docs/DOMAIN-SETUP.md](docs/DOMAIN-SETUP.md) for how it was set up).

@@ -26,19 +26,18 @@
 title: "WHIRC Kickoff Symposium Announced"
 date: 2026-09-01
 excerpt: "一句话摘要，显示在新闻卡片上"
-image: /whirc-website/images/news/kickoff.jpg   # 可选
+image: /images/news/kickoff.jpg   # 可选
 ---
 
 正文支持完整 Markdown：**加粗**、[链接](https://...)、列表、图片等。
 
-![图片说明](/whirc-website/images/news/photo.jpg)
+![图片说明](/images/news/photo.jpg)
 ```
 
 4. 页面底部点 **Commit changes** → 完成
 
 > **图片**：先到 `public/images/news/` 用 **Add file → Upload files** 上传，
-> 再在 Markdown 中以 `/whirc-website/images/news/文件名` 引用。
-> （迁移到 whirc.umd.edu 后前缀改为 `/images/...`）
+> 再在 Markdown 中以 `/images/news/文件名` 引用。
 > **视频**：推荐上传到 YouTube 后在正文中贴链接。
 
 ## 添加团队成员模板
@@ -49,7 +48,7 @@ name: "Jane Doe"
 role: "Affiliated Faculty"          # 显示在名字上方的小标签
 title: "Assistant Professor, Kinesiology"
 school: "School of Public Health"
-photo: /whirc-website/images/people/jane-doe.jpg
+photo: /images/people/jane-doe.jpg
 website: https://sph.umd.edu/people/jane-doe
 group: faculty                       # leadership | faculty | students
 order: 10                            # 组内排序，数字小的在前

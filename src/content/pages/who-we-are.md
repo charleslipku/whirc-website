@@ -22,4 +22,4 @@ research across the lifespan.
 - **Alisa Clyne** — PI, Professor, Fischell Department of Bioengineering, A. James Clark School of Engineering
 - **Ang Li** — PI, Assistant Professor, Electrical and Computer Engineering, A. James Clark School of Engineering
 
-See the full team on our [People](/whirc-website/people/) page.
+See the full team on our [People](/people/) page.
