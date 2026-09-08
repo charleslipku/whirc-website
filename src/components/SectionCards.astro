@@ -6,7 +6,7 @@ interface Props {
 const { items } = Astro.props;
 ---
 
-<div class="section-cards">
+<div class:list={['section-cards', { 'section-cards--wide': items.length > 2 }]}>
   {items.map((item) => (
     <a class="card section-card" href={item.href}>
       <h2>{item.title}</h2>
@@ -23,6 +23,9 @@ const { items } = Astro.props;
     gap: 1.75rem;
     max-width: 860px;
     margin: 0 auto;
+  }
+  .section-cards--wide {
+    max-width: none;
   }
   .section-card {
     display: flex;

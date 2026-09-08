@@ -10,8 +10,8 @@
 | 发一条 WHIRC 新闻 | `src/content/news/` 新建 `.md` 文件 |
 | 添加/修改团队成员 | `src/content/people/` 每人一个 `.md` |
 | 添加活动 | `src/content/events/` 新建 `.md` |
-| 修改 About / Research / Get Involved 正文 | `src/content/pages/` 对应 `.md` |
-| 修改联系方式、社交链接 | `src/content/config/site.yaml` |
+| 修改 About / Research（Affinity Research Teams、Publications、Projects）/ Get Involved 正文 | `src/content/pages/` 对应 `.md` |
+| 修改联系方式、社交链接、**捐赠页链接**（填 `links.donate` 后导航自动出现 Donate） | `src/content/config/site.yaml` |
 | **修改新闻抓取关键词** | `src/content/config/news-tags.yaml` |
 | 上传图片 | `public/images/` 对应子目录 |
 

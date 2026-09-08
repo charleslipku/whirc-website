@@ -1,19 +1,102 @@
 ---
+/** Get Involved：Contact / Events 入口独立于各受众说明之外；Support WHIRC 单独成块（Marie 8/31 反馈） */
 import { getEntry, render } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import { url } from '../utils';
+import { site } from '../site';
 
 const page = await getEntry('pages', 'get-involved');
 if (!page) throw new Error('Missing src/content/pages/get-involved.md');
 const { Content } = await render(page);
+const donate = site.links.donate?.trim();
 ---
 
 <Base title={page.data.title} description={page.data.subtitle}>
   <div class="page-hero">
     <div class="container"><h1>{page.data.title}</h1></div>
   </div>
+
+  <!-- 通用入口：所有受众都会用到 -->
+  <section class="actions">
+    <div class="container actions-inner">
+      <p class="actions-text">Whoever you are, two easy ways to start:</p>
+      <div class="actions-buttons">
+        <a class="btn btn--primary" href={url('/contact/')}>Contact Us</a>
+        <a class="btn btn--outline-dark" href={url('/events/')}>View Events</a>
+      </div>
+    </div>
+  </section>
+
   <section class="section">
     <div class="container prose">
       <Content />
     </div>
   </section>
+
+  <!-- Support WHIRC -->
+  <section class="section section--gray" id="support-whirc">
+    <div class="container support">
+      <h2 class="section-heading">Support WHIRC</h2>
+      <p>
+        Philanthropic support helps WHIRC fund seed research, train the next
+        generation of women's health researchers, and bring findings to the
+        communities that need them most.
+      </p>
+      {donate ? (
+        <a class="btn btn--primary" href={donate} rel="noopener">Give to WHIRC</a>
+      ) : (
+        <p class="support-note">
+          A giving page for WHIRC is being set up through UMD Grand Challenges.
+          In the meantime, please <a href={url('/contact/')}>reach out</a> to
+          learn about supporting women's health research at the University of Maryland.
+        </p>
+      )}
+    </div>
+  </section>
 </Base>
+
+<style>
+  .actions {
+    background: var(--gray-50);
+    border-bottom: 1px solid var(--gray-100);
+    padding: 1.5rem 0;
+  }
+  .actions-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .actions-text {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: 1.2rem;
+    color: var(--umd-black);
+  }
+  .actions-buttons {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .btn--outline-dark {
+    background: transparent;
+    color: var(--umd-black);
+    border: 2px solid var(--umd-black);
+  }
+  .btn--outline-dark:hover {
+    background: var(--umd-black);
+    color: var(--white);
+    text-decoration: none;
+  }
+  .support {
+    text-align: center;
+    max-width: 720px;
+  }
+  .support p {
+    color: var(--gray-700);
+  }
+  .support-note {
+    margin-top: 1rem;
+  }
+</style>

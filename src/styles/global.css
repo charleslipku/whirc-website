@@ -202,3 +202,29 @@ img {
 .skip-link:focus {
   top: 8px;
 }
+
+/* ── 内页标题横幅（所有内页共用） ── */
+.page-hero {
+  background: linear-gradient(120deg, var(--umd-black), var(--umd-red-dark));
+  color: var(--white);
+  padding: 3rem 0;
+  border-bottom: 4px solid var(--umd-gold);
+}
+.page-hero h1 {
+  color: var(--white);
+  margin: 0;
+}
+.page-hero .breadcrumb {
+  margin: 0 0 0.3rem;
+  font-size: 0.9rem;
+}
+.page-hero .breadcrumb a {
+  color: var(--umd-gold);
+  font-weight: 600;
+}
+.page-hero .page-subtitle {
+  margin: 0.5rem 0 0;
+  color: var(--gray-100);
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+}

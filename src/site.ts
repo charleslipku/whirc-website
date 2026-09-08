@@ -8,7 +8,7 @@ export interface SiteConfig {
   description: string;
   contact: { email: string; address: string };
   social: { linkedin?: string; instagram?: string; twitter?: string };
-  links: { grandChallenges: string; accessibility: string; privacy: string };
+  links: { donate?: string; grandChallenges: string; accessibility: string; privacy: string };
 }
 
 export const site: SiteConfig = parse(raw);

@@ -19,6 +19,21 @@ include:
   - "cervical cancer"
   - "ovarian"
   - "gendered racism"
+  - "gendered stress"
+  - "postpartum"
+  - "prenatal"
+  - "preterm birth"
+  - "childbirth"
+  - "birth outcomes"
+  - "fertility"
+  - "abortion"
+  - "contraception"
+  - "menstrua"
+  - "endometriosis"
+  - "polycystic"
+  - "preeclampsia"
+  - "sex differences"
+  - "cardiometabolic"
   - "WHIRC"
   - "Marie Thoma"
   - "Jioni Lewis"
@@ -31,6 +46,9 @@ exclude: []
 
 # ── 数据源（enabled: false 可临时停用某个源）──────────────
 sources:
+  # ── umd-terp-news 类型：UMD Terp（Drupal）主题的新闻列表页 ──
+  # 解析 <umd-element-card> 卡片并翻 pages 页，按 include/exclude 过滤
+  # （见下方 sph）。
   # ── umd-topic 类型：Maryland Today 编辑策划的专题页 ──
   # 条目由编辑人工归类（天然相关），不做 include 关键词过滤，
   # 仍应用 exclude 与 min_date
@@ -45,20 +63,24 @@ sources:
     type: rss
     url: "https://today.umd.edu/rss"
     enabled: true
+  # ⚠️ sph.umd.edu/rss.xml 只含活动通知（2026-09 验证），新闻改抓 /news 列表页
   - id: sph
     name: "School of Public Health"
-    type: rss
-    url: "https://sph.umd.edu/rss.xml"
+    type: umd-terp-news
+    url: "https://sph.umd.edu/news"
+    pages: 3        # 每页约 6 条；每日抓取只需覆盖最近几页
     enabled: true
   - id: engineering
     name: "Clark School of Engineering"
     type: rss
     url: "https://eng.umd.edu/rss.xml"
     enabled: true
+  # ⚠️ education.umd.edu/rss.xml 是站点内容源而非新闻（2026-09 验证），改抓 /news 列表页
   - id: education
     name: "College of Education"
-    type: rss
-    url: "https://education.umd.edu/rss.xml"
+    type: drupal-teaser-news
+    url: "https://education.umd.edu/news"
+    pages: 3
     enabled: true
   - id: umd-news
     name: "UMD News"

@@ -245,17 +245,19 @@ UMD 官方 RSS 源 ──┐
                                                        git commit ─► 触发站点重建部署
 ```
 
-### 7.2 数据源（初始清单，实施时验证可用性）
+### 7.2 数据源（2026-09 实际配置）
 
-| 来源 | 说明 |
-|------|------|
-| Maryland Today（today.umd.edu）RSS | UMD 主新闻源，覆盖全校 |
-| School of Public Health 新闻页/RSS | Marie Thoma、Jioni Lewis 相关报道多 |
-| Clark School of Engineering（eng.umd.edu）RSS | Clyne / Li 相关 |
-| College of Education 新闻 | Lewis 相关 |
-| UMD Research（research.umd.edu）新闻 | Grand Challenges 相关 |
+| id | 类型 | 说明 |
+|----|------|------|
+| mt-womens-health | `umd-topic` | Maryland Today「Women's Health」专题页，编辑人工归类，不做关键词过滤 |
+| maryland-today | `rss` | today.umd.edu 全站 RSS，关键词过滤 |
+| sph | `umd-terp-news` | sph.umd.edu/news 列表页解析（站点 rss.xml 只含活动通知），翻 `pages` 页后关键词过滤 |
+| education | `drupal-teaser-news` | education.umd.edu/news 列表页解析（rss.xml 为站点内容源而非新闻） |
+| engineering | `rss` | eng.umd.edu/rss.xml（内容多为表单/页面，命中率低，保留） |
+| ece / bioe | `newsengine` | Clark School 新闻引擎全文搜索 API，按 include 关键词逐个查询后再分词收紧 |
 
-若某来源无 RSS，脚本降级为 HTML 列表页解析（保留 CSS selector 配置项）。
+抓取完成后按链接去重，再按「标题（归一化）」去重一次——同一篇报道常被
+Maryland Today 与院系站点在相邻日期各发一次。
 
 ### 7.3 关键词配置（可自定义，R4 核心）
 

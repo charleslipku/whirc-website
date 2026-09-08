@@ -32,7 +32,7 @@ const latest = [...whircNews, ...inTheNews]
 const pillars = [
   {
     title: 'Who We Are',
-    text: 'An interdisciplinary collaborative of nearly 100 faculty, staff, and trainees across the University of Maryland, united to close long-standing gaps in women’s health research.',
+    text: 'An interdisciplinary collaborative of more than 110 faculty, staff, and trainees across the University of Maryland, united to close long-standing gaps in women’s health research.',
     href: url('/about/who-we-are/'),
     icon: '⚕',
   },
@@ -51,9 +51,9 @@ const pillars = [
 ];
 
 const stats = [
-  { value: '100+', label: 'Faculty, Staff & Trainees' },
-  { value: '4', label: 'Schools & Colleges' },
-  { value: '3', label: 'Research Pillars' },
+  { value: '110+', label: 'Faculty, Staff & Trainees' },
+  { value: '4', label: 'Departments' },
+  { value: '4', label: 'Core Research Areas' },
   { value: '50%+', label: 'Of the Population We Serve' },
 ];
 
@@ -232,13 +232,19 @@ const heroSlides = [
     font-size: 0.85rem;
     margin: 0 0 0.75rem;
   }
+  /* 标语在桌面端保持一行（Marie 8/31 反馈） */
   .hero-tagline {
     font-family: var(--font-serif);
-    font-size: 1.4rem;
+    font-size: 1.35rem;
     color: var(--gray-100);
     margin: 0.5rem 0 1.75rem;
-    max-width: 640px;
+    max-width: 100%;
     text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+  }
+  @media (min-width: 900px) {
+    .hero-tagline {
+      white-space: nowrap;
+    }
   }
   .hero-actions {
     display: flex;

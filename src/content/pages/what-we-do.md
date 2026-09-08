@@ -2,9 +2,6 @@
 title: What We Do
 ---
 
-WHIRC aims to **foster interdisciplinary research, educate future leaders, and inform
-policy and practice** through three interconnected pillars:
-
 ## Advancing Translational Research
 
 We support and connect research on health conditions that uniquely or

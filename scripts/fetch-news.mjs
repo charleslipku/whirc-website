@@ -157,6 +157,91 @@ async function fetchUmdTopic(source) {
   return results;
 }
 
+/**
+ * UMD Terp（Drupal）新闻列表页（如 sph.umd.edu/news）：无新闻 RSS
+ * （站点 rss.xml 只含活动通知），解析 <umd-element-card> 卡片并翻页。
+ * 结果按 include / exclude 关键词过滤。
+ */
+async function fetchUmdTerpNews(source, include, exclude) {
+  const origin = new URL(source.url).origin;
+  const pages = source.pages ?? 3;
+  const results = [];
+  for (let page = 0; page < pages; page += 1) {
+    const sep = source.url.includes('?') ? '&' : '?';
+    const res = await fetch(`${source.url}${sep}page=${page}`, {
+      headers: { 'user-agent': 'WHIRC-news-bot (whirc.umd.edu; academic site)' },
+      signal: AbortSignal.timeout(30_000),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const html = await res.text();
+    let found = 0;
+    for (const block of html.split(/<umd-element-card\b/).slice(1)) {
+      const chunk = block.slice(0, block.indexOf('</umd-element-card>'));
+      const headline = chunk.match(/slot="headline"[^>]*>\s*([^<]+?)\s*</s);
+      const link = chunk.match(/<a\s+slot="image"\s+href="([^"]+)"/) ?? chunk.match(/<a\s+href="([^"]+)"/);
+      const dateM = chunk.match(/<time\s+datetime="([^"]+)"/);
+      if (!headline || !link || !dateM) continue;
+      const date = new Date(dateM[1]);
+      if (Number.isNaN(+date)) continue;
+      const text = chunk.match(/slot="text">\s*([\s\S]*?)\s*<\/div>/);
+      const img = chunk.match(/<img\s+src="([^"]+)"/);
+      found += 1;
+      results.push({
+        title: cleanText(headline[1]),
+        link: new URL(link[1], origin).href,
+        date: date.toISOString().slice(0, 10),
+        excerpt: cleanText(text?.[1] ?? '').slice(0, 280),
+        image: img ? new URL(img[1].replace(/&amp;/g, '&'), origin).href : null,
+        source: source.name,
+        sourceId: source.id,
+      });
+    }
+    if (found === 0) break; // 翻到底了
+  }
+  return results.filter((n) => matchesKeywords(`${n.title} ${n.excerpt}`, include, exclude));
+}
+
+/**
+ * College of Education 新闻列表页（Drupal teaser 结构）：同样无新闻 RSS。
+ * 解析 .node__teaser__title / .node__date / 正文摘要并翻页。
+ */
+async function fetchDrupalTeaserNews(source, include, exclude) {
+  const origin = new URL(source.url).origin;
+  const pages = source.pages ?? 3;
+  const results = [];
+  for (let page = 0; page < pages; page += 1) {
+    const sep = source.url.includes('?') ? '&' : '?';
+    const res = await fetch(`${source.url}${sep}page=${page}`, {
+      headers: { 'user-agent': 'WHIRC-news-bot (whirc.umd.edu; academic site)' },
+      signal: AbortSignal.timeout(30_000),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const html = await res.text();
+    let found = 0;
+    for (const block of html.split(/class="node__teaser__title/).slice(1)) {
+      const chunk = block.slice(0, 3000);
+      const link = chunk.match(/<a\s+href="([^"]+)"[^>]*>\s*([^<]+?)\s*<\/a>/);
+      const dateM = chunk.match(/class="node__date">\s*([^<]+?)\s*</);
+      if (!link || !dateM) continue;
+      const date = new Date(dateM[1]);
+      if (Number.isNaN(+date)) continue;
+      const body = chunk.match(/field--name-body[^>]*>\s*([\s\S]*?)\s*<\/div>/);
+      found += 1;
+      results.push({
+        title: cleanText(link[2]),
+        link: new URL(link[1], origin).href,
+        date: date.toISOString().slice(0, 10),
+        excerpt: cleanText(body?.[1] ?? '').slice(0, 280),
+        image: null,
+        source: source.name,
+        sourceId: source.id,
+      });
+    }
+    if (found === 0) break;
+  }
+  return results.filter((n) => matchesKeywords(`${n.title} ${n.excerpt}`, include, exclude));
+}
+
 async function main() {
   const config = parseYaml(await readFile(CONFIG_PATH, 'utf8'));
   const include = config.include ?? [];
@@ -188,6 +273,12 @@ async function main() {
           (n) => !exclude.some((k) => `${n.title} ${n.excerpt}`.toLowerCase().includes(k.toLowerCase()))
         );
         console.log(`[${source.id}] 专题页解析 ${items.length} 条，收录 ${matched.length} 条`);
+      } else if (source.type === 'umd-terp-news') {
+        matched = await fetchUmdTerpNews(source, include, exclude);
+        console.log(`[${source.id}] 新闻列表页命中 ${matched.length} 条`);
+      } else if (source.type === 'drupal-teaser-news') {
+        matched = await fetchDrupalTeaserNews(source, include, exclude);
+        console.log(`[${source.id}] 新闻列表页命中 ${matched.length} 条`);
       } else if (source.type === 'newsengine') {
         // 引擎的全文搜索是 OR 式的（结果过泛），需再用分词匹配收紧：
         // 关键词的所有词都出现在标题/摘要中才收录
@@ -230,8 +321,17 @@ async function main() {
     }
   }
 
+  // 同一篇报道常被 Maryland Today 与院系站点在相邻日期各发一次（标题相同、日期差一天），
+  // 归档内再按标题去重一次，保留较新的一条
+  const seenMergedTitle = new Set();
   const merged = [...byLink.values()]
     .sort((a, b) => (a.date < b.date ? 1 : -1))
+    .filter((n) => {
+      const key = normalize(n.title).trim();
+      if (seenMergedTitle.has(key)) return false;
+      seenMergedTitle.add(key);
+      return true;
+    })
     .slice(0, maxItems);
 
   await writeFile(OUTPUT_PATH, `${JSON.stringify(merged, null, 2)}\n`);

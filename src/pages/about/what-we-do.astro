@@ -1,6 +1,150 @@
 ---
-import MarkdownPage from '../../layouts/MarkdownPage.astro';
+/** What We Do：三支柱视觉图 + Mission 单独点出 + 各支柱详细说明（Marie 8/31 反馈） */
+import { getEntry, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
 import { url } from '../../utils';
+
+const page = await getEntry('pages', 'what-we-do');
+if (!page) throw new Error('Missing src/content/pages/what-we-do.md');
+const { Content } = await render(page);
+
+// 三支柱；href 指向下方 markdown 中对应 h2 的自动锚点
+const pillars = [
+  {
+    n: '1',
+    title: 'Advancing Translational Research',
+    text: 'Research on conditions that uniquely or disproportionately affect women.',
+    href: '#advancing-translational-research',
+  },
+  {
+    n: '2',
+    title: 'Developing a Diverse Workforce Pipeline',
+    text: 'Training the next generation of women’s health researchers.',
+    href: '#developing-a-diverse-workforce-pipeline',
+  },
+  {
+    n: '3',
+    title: 'Building Community Partnerships',
+    text: 'Carrying findings beyond academia into practice and policy.',
+    href: '#building-community-partnerships',
+  },
+];
+
+const mission =
+  'WHIRC fosters interdisciplinary research, educates future leaders, and informs policy and practice to advance women’s health across the lifespan.';
 ---
 
-<MarkdownPage slug="what-we-do" parent={{ label: 'About', href: url('/about/') }} />
+<Base title={page.data.title} description={mission}>
+  <div class="page-hero">
+    <div class="container">
+      <p class="breadcrumb"><a href={url('/about/')}>About</a> /</p>
+      <h1>{page.data.title}</h1>
+    </div>
+  </div>
+
+  <!-- Mission -->
+  <section class="mission" aria-labelledby="mission-heading">
+    <div class="container">
+      <p class="mission-kicker" id="mission-heading">Our Mission</p>
+      <p class="mission-text">{mission}</p>
+    </div>
+  </section>
+
+  <!-- Three pillars visual -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-heading">Three Interconnected Pillars</h2>
+      <div class="pillars">
+        {pillars.map((p) => (
+          <a class="card pillar" href={p.href}>
+            <span class="pillar-num" aria-hidden="true">{p.n}</span>
+            <h3>{p.title}</h3>
+            <p>{p.text}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Pillar details (markdown) -->
+  <section class="section section--gray">
+    <div class="container prose">
+      <Content />
+    </div>
+  </section>
+</Base>
+
+
+<style>
+  .mission {
+    background: var(--gray-50);
+    border-bottom: 4px solid var(--umd-gold);
+    padding: 2.75rem 0;
+    text-align: center;
+  }
+  .mission-kicker {
+    color: var(--umd-red);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    margin: 0 0 0.6rem;
+  }
+  .mission-text {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    line-height: 1.5;
+    color: var(--umd-black);
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.75rem;
+  }
+  .pillar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 2rem 1.5rem;
+    border-top: 5px solid var(--umd-gold);
+    color: inherit;
+  }
+  .pillar:hover {
+    text-decoration: none;
+  }
+  .pillar:hover h3 {
+    color: var(--umd-red);
+  }
+  .pillar-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--umd-red);
+    color: var(--umd-gold);
+    font-family: var(--font-serif);
+    font-size: 1.7rem;
+    font-weight: 600;
+    margin-bottom: 0.9rem;
+  }
+  .pillar h3 {
+    font-size: 1.25rem;
+    margin: 0 0 0.4rem;
+    transition: color 0.15s;
+  }
+  .pillar p {
+    color: var(--gray-700);
+    margin: 0;
+  }
+  @media (max-width: 860px) {
+    .pillars {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

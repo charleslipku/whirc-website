@@ -1,7 +1,7 @@
 # ── 站点全局配置（团队成员可直接编辑）──────────────────
 title: "WHIRC — Women's Health Interdisciplinary Research Collaborative"
 shortName: "WHIRC"
-tagline: "Bridging Disciplines. Advancing Research and Education. Elevating Women's Health."
+tagline: "Bridge Disciplines. Advance Research and Education. Elevate Women's Health."
 description: >-
   The Women's Health Interdisciplinary Research Collaborative (WHIRC) at the
   University of Maryland fosters interdisciplinary research, educates future
@@ -16,6 +16,8 @@ social:
   instagram: ""
   twitter: ""
 links:
+  # 捐赠页（Grand Challenges 建好后填 URL；留空则 Donate 按钮与导航项不显示）
+  donate: ""
   grandChallenges: "https://research.umd.edu/grand-challenges-grants/grand-challenges-2/institutional-grants-2.0/whirc"
   accessibility: "https://www.umd.edu/web-accessibility"
   privacy: "https://www.umd.edu/privacy-notice"

@@ -24,8 +24,9 @@ const nav = [
     label: 'Research',
     href: url('/research/'),
     children: [
-      { label: 'Focus Areas', href: url('/research/focus-areas/') },
-      { label: 'Publications & Projects', href: url('/research/publications/') },
+      { label: 'Affinity Research Teams', href: url('/research/affinity-research-teams/') },
+      { label: 'Publications', href: url('/research/publications/') },
+      { label: 'Projects', href: url('/research/projects/') },
     ],
   },
   {
@@ -48,14 +49,15 @@ const nav = [
     label: 'Get Involved',
     href: url('/get-involved/'),
     children: [
-      { label: 'Faculty & Researchers', href: url('/get-involved/#for-faculty--researchers') },
-      { label: 'Students & Trainees', href: url('/get-involved/#for-students--trainees') },
-      { label: 'Community Partners', href: url('/get-involved/#for-community-partners') },
+      { label: 'Join WHIRC', href: url('/get-involved/#join-whirc') },
       { label: 'Support WHIRC', href: url('/get-involved/#support-whirc') },
     ],
   },
   { label: 'Contact', href: url('/contact/') },
 ];
+
+// Donate：site.yaml 的 links.donate 填了 URL 才显示（发展官要求顶部有醒目的 Donate 入口）
+const donate = site.links.donate?.trim();
 ---
 
 <header class="site-header">
@@ -84,6 +86,11 @@ const nav = [
             )}
           </li>
         ))}
+        {donate && (
+          <li class="nav-item nav-item--donate">
+            <a href={donate} rel="noopener">Donate</a>
+          </li>
+        )}
       </ul>
     </nav>
   </div>
@@ -160,6 +167,25 @@ const nav = [
     text-decoration: none;
     border-bottom-color: var(--umd-gold);
     color: var(--umd-red);
+  }
+
+  .nav-item--donate > a {
+    margin-left: 0.5rem;
+    padding: 0.5rem 1.1rem;
+    background: var(--umd-gold);
+    color: var(--umd-black);
+    border-radius: var(--radius);
+    border-bottom: none;
+    align-self: center;
+  }
+  .nav-item--donate > a:hover {
+    background: var(--umd-red);
+    color: var(--white);
+    border-bottom: none;
+  }
+  .nav-item--donate {
+    display: flex;
+    align-items: center;
   }
 
   .dropdown {
