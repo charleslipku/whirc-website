@@ -325,7 +325,8 @@ async function main() {
   // 归档内再按标题去重一次，保留较新的一条
   const seenMergedTitle = new Set();
   const merged = [...byLink.values()]
-    .sort((a, b) => (a.date < b.date ? 1 : -1))
+    // 日期相同再按链接排，保证每日运行结果稳定（否则会产生只有顺序变化的空提交）
+    .sort((a, b) => (a.date === b.date ? a.link.localeCompare(b.link) : a.date < b.date ? 1 : -1))
     .filter((n) => {
       const key = normalize(n.title).trim();
       if (seenMergedTitle.has(key)) return false;
