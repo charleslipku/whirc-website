@@ -97,6 +97,12 @@ const donate = site.links.donate?.trim();
 </header>
 
 <script>
+  // 下滑超过 60px 后页头切换为紧凑模式（sticky 时不占太多屏幕）
+  const header = document.querySelector('.site-header');
+  const updateCompact = () => header?.classList.toggle('is-compact', window.scrollY > 60);
+  updateCompact();
+  window.addEventListener('scroll', updateCompact, { passive: true });
+
   const toggle = document.querySelector('.nav-toggle');
   const nav = document.getElementById('site-nav');
   toggle?.addEventListener('click', () => {
@@ -131,12 +137,21 @@ const donate = site.links.donate?.trim();
     align-items: center;
     justify-content: space-between;
     gap: 1.5rem;
-    min-height: 116px;
+    min-height: 148px;
+    transition: min-height 0.25s ease;
   }
+  /* 页面顶部用大尺寸（“University of Maryland” 小字可读）；下滑后收紧为紧凑高度 */
   .brand-logo {
-    height: 104px;
+    height: 132px;
     width: auto;
     display: block;
+    transition: height 0.25s ease;
+  }
+  .site-header.is-compact .header-inner {
+    min-height: 100px;
+  }
+  .site-header.is-compact .brand-logo {
+    height: 88px;
   }
 
   /* 注意 “>” 只作用于顶层菜单，避免命中嵌套的 .dropdown ul（会把下拉菜单永久撑开） */
@@ -237,8 +252,9 @@ const donate = site.links.donate?.trim();
     .nav-toggle {
       display: block;
     }
-    .header-inner {
-      min-height: 88px;
+    .header-inner,
+    .site-header.is-compact .header-inner {
+      min-height: 96px;
     }
     .site-nav {
       display: none;
@@ -266,8 +282,9 @@ const donate = site.links.donate?.trim();
       border-top: none;
       padding-left: 1rem;
     }
-    .brand-logo {
-      height: 72px;
+    .brand-logo,
+    .site-header.is-compact .brand-logo {
+      height: 80px;
     }
   }
 </style>
