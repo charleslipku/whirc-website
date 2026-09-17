@@ -13,6 +13,9 @@
   --gray-50: #f8f8f8;
   --white: #ffffff;
 
+  /* 文字链接色：白底用品牌红（4.8:1），灰底自动切换为深红（对比度更高） */
+  --link: var(--umd-red);
+
   --font-serif: 'Crimson Pro', Georgia, 'Times New Roman', serif;
   --font-sans: 'Source Sans 3 Variable', 'Source Sans 3', -apple-system,
     BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
@@ -58,11 +61,19 @@ h2 { font-size: clamp(1.7rem, 3.5vw, 2.3rem); }
 h3 { font-size: 1.35rem; }
 
 a {
-  color: var(--umd-red);
+  color: var(--link);
   text-decoration: none;
 }
 a:hover {
   text-decoration: underline;
+}
+
+/* 键盘焦点：黑圈 + 金圈双色，浅色和深色背景上都可见（WCAG 2.4.7 / 2.4.11） */
+:focus-visible {
+  outline: 3px solid var(--umd-gold);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--umd-black);
+  border-radius: 2px;
 }
 
 img {
@@ -83,6 +94,7 @@ img {
 
 .section--gray {
   background: var(--gray-50);
+  --link: var(--umd-red-dark);
 }
 
 .section-heading {
@@ -140,6 +152,16 @@ img {
 }
 
 /* Prose (rendered markdown) */
+/* 正文里的链接默认带下划线，不只靠颜色区分（WCAG 1.4.1） */
+.prose a,
+.empty a,
+.support a,
+.contact-card p a {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  text-decoration-thickness: 1px;
+}
+
 .prose {
   max-width: 46rem;
   margin: 0 auto;
