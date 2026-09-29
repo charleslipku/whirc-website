@@ -1,5 +1,5 @@
 ---
-import { formatDate } from '../utils';
+import { formatDate, url } from '../utils';
 
 interface Props {
   title: string;
@@ -12,6 +12,8 @@ interface Props {
 }
 
 const { title, href, date, image, excerpt, source, external = false } = Astro.props;
+// 没有配图的新闻用校园图兜底，保证新闻网格整齐
+const fallback = url('/images/news/default.jpg');
 ---
 
 <article class="card news-card">
@@ -21,7 +23,7 @@ const { title, href, date, image, excerpt, source, external = false } = Astro.pr
     target={external ? '_blank' : undefined}
     rel={external ? 'noopener' : undefined}
   >
-    {image && <img class="news-card-img" src={image} alt="" loading="lazy" />}
+    <img class="news-card-img" src={image || fallback} alt="" loading="lazy" />
     <div class="news-card-body">
       <p class="news-card-meta">
         <time datetime={new Date(date).toISOString().slice(0, 10)}>{formatDate(date)}</time>

@@ -24,3 +24,10 @@ Workshops and symposia are announced on our Events page.
 Community partnership is one of WHIRC's three pillars. If your organization
 works on women's health — from maternal health to health equity — we'd love
 to explore how research can support your mission.
+
+### For Industry Partners
+
+WHIRC welcomes collaboration with companies working to improve women's health,
+from medical devices and diagnostics to digital health and AI. Opportunities
+include sponsored research, data and technology partnerships, student
+internships, and translating discoveries into products that reach women.

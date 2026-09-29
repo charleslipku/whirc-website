@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import { formatDate } from '../utils';
+import { formatDate, url } from '../utils';
 
 const events = (await getCollection('events')).sort((a, b) => +b.data.date - +a.data.date);
 const now = new Date();
@@ -18,7 +18,17 @@ const past = events.filter((e) => (e.data.endDate ?? e.data.date) < now);
     <div class="container">
       <h2 class="section-heading">Upcoming Events</h2>
       {upcoming.length === 0 ? (
-        <p class="empty">No upcoming events scheduled — check back soon.</p>
+        <div class="intro">
+          <p>
+            WHIRC hosts seminars, workshops, and symposia that bring together
+            researchers, students, clinicians, and community partners working on
+            women's health across the University of Maryland.
+          </p>
+          <p>
+            Event announcements go out first to our mailing list.
+            <a href={url('/contact/')}>Contact us</a> to join.
+          </p>
+        </div>
       ) : (
         <ul class="event-list">
           {upcoming.map((e) => (
@@ -49,16 +59,11 @@ const past = events.filter((e) => (e.data.endDate ?? e.data.date) < now);
     </div>
   </section>
 
+  {past.length > 0 && (
   <section class="section section--gray" id="past">
     <div class="container">
       <h2 class="section-heading">Past Events</h2>
-      {past.length === 0 ? (
-        <p class="empty">
-          Past events will be archived here after they take place. WHIRC is just
-          getting started — our first events will be announced soon.
-        </p>
-      ) : (
-        <ul class="past-list">
+      <ul class="past-list">
           {past.map((e) => (
             <li>
               <strong>{e.data.title}</strong> — {formatDate(e.data.date)}
@@ -66,9 +71,9 @@ const past = events.filter((e) => (e.data.endDate ?? e.data.date) < now);
             </li>
           ))}
         </ul>
-      )}
     </div>
   </section>
+  )}
 </Base>
 
 <style>
@@ -127,8 +132,13 @@ const past = events.filter((e) => (e.data.endDate ?? e.data.date) < now);
   .past-list li {
     margin-bottom: 0.5rem;
   }
-  .empty {
+  .intro {
+    max-width: 680px;
+    margin: 0 auto;
     text-align: center;
     color: var(--gray-700);
+  }
+  .intro a {
+    text-decoration: underline;
   }
 </style>

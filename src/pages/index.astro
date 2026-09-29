@@ -52,16 +52,18 @@ const pillars = [
 
 const stats = [
   { value: '110+', label: 'Faculty, Staff & Trainees' },
-  { value: '4', label: 'Departments' },
+  { value: '4', label: 'Disciplines: Public Health, Psychology, Bioengineering & AI' },
   { value: '4', label: 'Core Research Areas' },
-  { value: '50%+', label: 'Of the Population We Serve' },
+  // 全球女性人口 4.09B（World Bank SP.POP.TOTL.FE.IN, 2025）；写 4 Billion+ 不易过时
+  { value: '4 Billion+', label: 'Women and girls worldwide. We aim to help all of them.' },
 ];
 
 // Hero 轮播图（public/images/hero/ 下增删图片后在此登记即可）
+// focus：裁切时保留的焦点（CSS object-position），宽屏下图片上下会被裁掉
 const heroSlides = [
-  { src: url('/images/hero/women-laughing.webp'), alt: 'Women of all ages laughing together' },
-  { src: url('/images/hero/mckeldin-mall.jpg'), alt: 'McKeldin Mall, University of Maryland' },
-  { src: url('/images/hero/research-event.webp'), alt: 'Researchers presenting at a UMD event' },
+  { src: url('/images/hero/women-laughing.webp'), alt: 'Women of all ages laughing together', focus: 'center 8%' },
+  { src: url('/images/hero/mckeldin-mall.jpg'), alt: 'McKeldin Mall, University of Maryland', focus: 'center' },
+  { src: url('/images/hero/research-event.webp'), alt: 'Researchers presenting at a UMD event', focus: 'center' },
 ];
 ---
 
@@ -74,6 +76,7 @@ const heroSlides = [
           class:list={['hero-slide', { 'is-active': i === 0 }]}
           src={slide.src}
           alt={slide.alt}
+          style={`object-position: ${slide.focus}; transform-origin: ${slide.focus};`}
           loading={i === 0 ? 'eager' : 'lazy'}
           fetchpriority={i === 0 ? 'high' : undefined}
         />
@@ -86,7 +89,7 @@ const heroSlides = [
       <p class="hero-tagline">{site.tagline}</p>
       <div class="hero-actions">
         <a class="btn btn--primary" href={url('/about/')}>Learn More</a>
-        <a class="btn btn--outline" href={url('/get-involved/')}>Get Involved</a>
+        <a class="btn btn--primary" href={url('/get-involved/')}>Get Involved</a>
       </div>
     </div>
   </section>
@@ -150,13 +153,13 @@ const heroSlides = [
   <!-- Quote / mission -->
   <section class="quote-band">
     <div class="container">
-      <blockquote>
+      <div class="statement">
         <p>
-          "Women have been underrepresented in clinical trials and health studies, creating
-          knowledge gaps about conditions that uniquely or disproportionately impact more than
-          half the population. WHIRC exists to change that."
+          Women have been underrepresented in clinical trials and health studies, creating
+          knowledge gaps about conditions that uniquely or disproportionately affect them.
+          <strong>WHIRC exists to change that.</strong>
         </p>
-      </blockquote>
+      </div>
     </div>
   </section>
 </Base>
@@ -304,8 +307,9 @@ const heroSlides = [
     color: var(--umd-gold);
   }
   .stat-label {
-    margin: 0.2rem 0 0;
+    margin: 0.2rem auto 0;
     font-size: 0.95rem;
+    max-width: 240px;
   }
   @media (max-width: 700px) {
     .stats-grid {
@@ -338,7 +342,7 @@ const heroSlides = [
     border-top: 4px solid var(--umd-gold);
     padding: 3.5rem 0;
   }
-  .quote-band blockquote {
+  .quote-band .statement {
     margin: 0 auto;
     max-width: 780px;
     text-align: center;
@@ -349,5 +353,9 @@ const heroSlides = [
     line-height: 1.5;
     color: var(--umd-black);
     margin: 0;
+  }
+  .quote-band strong {
+    color: var(--umd-red-dark);
+    font-weight: 600;
   }
 </style>
