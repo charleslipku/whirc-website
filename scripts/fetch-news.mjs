@@ -30,11 +30,16 @@ function cleanText(html = '') {
     .trim();
 }
 
+/** 弯引号/弯撇号统一为直引号：UMD 站点标题多用 ’（如 Women’s），否则 "women's" 永远匹配不上 */
+function straightQuotes(s) {
+  return String(s).replace(/[\u2018\u2019\u02BC]/g, "'").replace(/[\u201C\u201D]/g, '"');
+}
+
 function matchesKeywords(text, include, exclude) {
-  const t = text.toLowerCase();
-  const hit = include.some((k) => t.includes(k.toLowerCase()));
+  const t = straightQuotes(text).toLowerCase();
+  const hit = include.some((k) => t.includes(straightQuotes(k).toLowerCase()));
   if (!hit) return false;
-  return !exclude.some((k) => t.includes(k.toLowerCase()));
+  return !exclude.some((k) => t.includes(straightQuotes(k).toLowerCase()));
 }
 
 /** 分词匹配：关键词的所有词都出现即命中（兼容 "Alisa Morss Clyne" 匹配 "Alisa Clyne"、
@@ -242,6 +247,64 @@ async function fetchDrupalTeaserNews(source, include, exclude) {
   return results.filter((n) => matchesKeywords(`${n.title} ${n.excerpt}`, include, exclude));
 }
 
+/**
+ * Maryland Today 简讯列表页（today.umd.edu/briefs）：简讯不进 RSS，也常不在专题页。
+ * 解析列表（<umd-element-card-overlay> / <umd-element-article>）并翻 pages 页；
+ * 列表摘要被截断，因此再打开每条简讯页取完整描述（JSON-LD / og:description）后做关键词匹配。
+ */
+async function fetchUmdBriefs(source, include, exclude) {
+  const headers = { 'user-agent': 'WHIRC-news-bot (whirc.umd.edu; academic site)' };
+  const pages = source.pages ?? 2;
+  const items = [];
+  for (let page = 1; page <= pages; page += 1) {
+    const sep = source.url.includes('?') ? '&' : '?';
+    const res = await fetch(page === 1 ? source.url : `${source.url}${sep}page=${page}`, {
+      headers, signal: AbortSignal.timeout(30_000),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const html = await res.text();
+    let found = 0;
+    for (const block of html.split(/<umd-element-(?:card-overlay|article|card)\b/).slice(1)) {
+      const chunk = block.slice(0, block.search(/<\/umd-element-(?:card-overlay|article|card)>/) + 1 || undefined);
+      const headline = chunk.match(/slot="headline"[^>]*>\s*<a\s+href="([^"]+)"[^>]*>\s*(?:<span[^>]*>)?\s*([^<]+?)\s*</s);
+      const dateM = chunk.match(/slot="date"[^>]*>\s*([^<]+?)\s*</s);
+      if (!headline || !dateM) continue;
+      const date = new Date(dateM[1]);
+      if (Number.isNaN(+date)) continue;
+      const text = chunk.match(/slot="text"[^>]*>\s*([^<]+?)\s*</s);
+      const img = chunk.match(/<img\s+src="([^"]+)"/);
+      found += 1;
+      items.push({
+        title: cleanText(headline[2]),
+        link: headline[1],
+        date: date.toISOString().slice(0, 10),
+        excerpt: cleanText(text?.[1] ?? '').slice(0, 280),
+        image: img ? img[1].replace(/&amp;/g, '&') : null,
+        source: source.name,
+        sourceId: source.id,
+      });
+    }
+    if (found === 0) break;
+  }
+  // 取完整描述再匹配（列表摘要常在关键词出现前就被截断）
+  const matched = [];
+  for (const item of items) {
+    let full = item.excerpt;
+    try {
+      const res = await fetch(item.link, { headers, signal: AbortSignal.timeout(30_000) });
+      if (res.ok) {
+        const html = await res.text();
+        const d = html.match(/"description"\s*:\s*"((?:[^"\\]|\\.)*)"/) ?? html.match(/property="og:description"\s+content="([^"]*)"/);
+        if (d) full = cleanText(d[1].replace(/\\"/g, '"'));
+      }
+    } catch { /* 单条失败就用列表摘要 */ }
+    if (matchesKeywords(`${item.title} ${full}`, include, exclude)) {
+      matched.push({ ...item, excerpt: full.slice(0, 280) });
+    }
+  }
+  return matched;
+}
+
 async function main() {
   const config = parseYaml(await readFile(CONFIG_PATH, 'utf8'));
   const include = config.include ?? [];
@@ -273,6 +336,9 @@ async function main() {
           (n) => !exclude.some((k) => `${n.title} ${n.excerpt}`.toLowerCase().includes(k.toLowerCase()))
         );
         console.log(`[${source.id}] 专题页解析 ${items.length} 条，收录 ${matched.length} 条`);
+      } else if (source.type === 'umd-briefs') {
+        matched = await fetchUmdBriefs(source, include, exclude);
+        console.log(`[${source.id}] 简讯列表命中 ${matched.length} 条`);
       } else if (source.type === 'umd-terp-news') {
         matched = await fetchUmdTerpNews(source, include, exclude);
         console.log(`[${source.id}] 新闻列表页命中 ${matched.length} 条`);

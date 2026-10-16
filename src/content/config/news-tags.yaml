@@ -2,7 +2,9 @@
 #  News 自动抓取配置 —— 团队成员可直接在 GitHub 网页上编辑本文件
 #
 #  规则：新闻的「标题或摘要」命中 include 中任一关键词（不区分
-#  大小写）即被收录；再命中 exclude 中任一关键词则被剔除。
+#  大小写，弯撇号 ’ 视同 '）即被收录；再命中 exclude 中任一关键词则被剔除。
+#  关键词是子串匹配，所以写词干更稳：如 "menopaus" 同时命中
+#  menopause / menopausal / postmenopausal；"pregnan" 命中 pregnancy / pregnant。
 #  修改保存 (commit) 后，下一次定时抓取自动生效。
 # ══════════════════════════════════════════════════════════════
 
@@ -13,11 +15,11 @@ include:
   - "maternal health"
   - "maternal mortality"
   - "reproductive health"
-  - "pregnancy"
-  - "menopause"
+  - "pregnan"
+  - "menopaus"
   - "breast cancer"
   - "cervical cancer"
-  - "ovarian"
+  - "ovar"
   - "gendered racism"
   - "gendered stress"
   - "postpartum"
@@ -32,6 +34,9 @@ include:
   - "endometriosis"
   - "polycystic"
   - "preeclampsia"
+  - "hypertension in women"
+  - "in women"
+  - "among women"
   - "sex differences"
   - "cardiometabolic"
   - "WHIRC"
@@ -56,6 +61,15 @@ sources:
     name: "Maryland Today · Women's Health"
     type: umd-topic
     url: "https://today.umd.edu/topic/womens-health"
+    enabled: true
+
+  # ── umd-briefs 类型：Maryland Today 简讯（不进 RSS）──
+  # 翻 pages 页列表，并打开每条简讯取完整描述后再按关键词匹配
+  - id: mt-briefs
+    name: "Maryland Today"
+    type: umd-briefs
+    url: "https://today.umd.edu/briefs"
+    pages: 2
     enabled: true
 
   - id: maryland-today
