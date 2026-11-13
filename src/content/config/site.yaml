@@ -15,6 +15,15 @@ social:
   linkedin: ""
   instagram: ""
   twitter: ""
+# ── 活动日历同步（Google Calendar）──
+# 1) 用 UMD Google 账号新建一个日历（如 "WHIRC Events"），设置 → 访问权限 → 公开
+# 2) 「集成日历」里复制「公开地址（iCal 格式）」填到 ical；复制「公开网址」填到 subscribe
+# 3) 之后在日历里增删活动即可，网站每天自动同步（也可在 GitHub Actions 手动触发）
+# 留空则只显示 src/content/events/ 里手写的活动
+calendar:
+  ical: ""
+  subscribe: ""
+
 links:
   # 捐赠页（Grand Challenges 建好后填 URL；留空则 Donate 按钮与导航项不显示）
   donate: ""

@@ -1,4 +1,4 @@
-name: Fetch UMD News
+name: Fetch UMD News & Events
 
 on:
   schedule:
@@ -20,14 +20,15 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run fetch-news
+      - run: npm run fetch-events
       - name: Commit if changed
         run: |
-          if git diff --quiet src/data/external-news.json; then
-            echo "No new matching news."
+          if git diff --quiet src/data/external-news.json src/data/calendar-events.json; then
+            echo "No new news or events."
             exit 0
           fi
           git config user.name "whirc-news-bot"
           git config user.email "actions@github.com"
-          git add src/data/external-news.json
-          git commit -m "chore(news): auto-update In The News feed"
+          git add src/data/external-news.json src/data/calendar-events.json
+          git commit -m "chore(data): auto-update news feed and calendar events"
           git push

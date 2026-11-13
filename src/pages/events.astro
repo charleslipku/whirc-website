@@ -1,15 +1,18 @@
 ---
-import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import { formatDate, url } from '../utils';
+import { url } from '../utils';
+import { site } from '../site';
+import { getAllEvents, isUpcoming, formatEventDate } from '../events';
 
-const events = (await getCollection('events')).sort((a, b) => +b.data.date - +a.data.date);
+const all = await getAllEvents();
 const now = new Date();
-const upcoming = events.filter((e) => (e.data.endDate ?? e.data.date) >= now).reverse();
-const past = events.filter((e) => (e.data.endDate ?? e.data.date) < now);
+const upcoming = all.filter((e) => isUpcoming(e, now));
+const past = all.filter((e) => !isUpcoming(e, now)).reverse();
+const subscribe = site.calendar?.subscribe?.trim();
+const ical = site.calendar?.ical?.trim();
 ---
 
-<Base title="Events" description="WHIRC workshops, symposia, and community events.">
+<Base title="Events" description="WHIRC seminars, symposia, workshops, and community events.">
   <div class="page-hero">
     <div class="container"><h1>Events</h1></div>
   </div>
@@ -17,40 +20,48 @@ const past = events.filter((e) => (e.data.endDate ?? e.data.date) < now);
   <section class="section" id="upcoming">
     <div class="container">
       <h2 class="section-heading">Upcoming Events</h2>
+      <div class="intro">
+        <p>
+          WHIRC hosts seminars, workshops, and symposia that bring together
+          researchers, students, clinicians, and community partners working on
+          women's health across the University of Maryland.
+          Event announcements go out first to our mailing list —
+          <a href={url('/contact/')}>contact us</a> to join.
+        </p>
+        {(subscribe || ical) && (
+          <p class="subscribe">
+            {subscribe && <a class="btn btn--primary" href={subscribe} rel="noopener">Subscribe to WHIRC Calendar</a>}
+            {ical && <a class="ical-link" href={ical.replace(/^https?:/, 'webcal:')}>iCal / Outlook feed</a>}
+          </p>
+        )}
+      </div>
+
       {upcoming.length === 0 ? (
-        <div class="intro">
-          <p>
-            WHIRC hosts seminars, workshops, and symposia that bring together
-            researchers, students, clinicians, and community partners working on
-            women's health across the University of Maryland.
-          </p>
-          <p>
-            Event announcements go out first to our mailing list.
-            <a href={url('/contact/')}>Contact us</a> to join.
-          </p>
-        </div>
+        <p class="empty">No upcoming events are scheduled at the moment.</p>
       ) : (
         <ul class="event-list">
           {upcoming.map((e) => (
-            <li class="card event">
-              <div class="event-date">
+            <li class="card event" id={e.id}>
+              <div class="event-date" aria-hidden="true">
                 <span class="event-month">
-                  {e.data.date.toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' })}
+                  {e.date.toLocaleDateString('en-US', { month: 'short', timeZone: e.allDay ? 'UTC' : 'America/New_York' })}
                 </span>
                 <span class="event-day">
-                  {e.data.date.toLocaleDateString('en-US', { day: 'numeric', timeZone: 'UTC' })}
+                  {e.date.toLocaleDateString('en-US', { day: 'numeric', timeZone: e.allDay ? 'UTC' : 'America/New_York' })}
                 </span>
               </div>
               <div class="event-body">
-                <h3>{e.data.title}</h3>
+                <h3>{e.title}</h3>
                 <p class="event-meta">
-                  {formatDate(e.data.date)}
-                  {e.data.location && <> · {e.data.location}</>}
+                  {formatEventDate(e)}
+                  {e.location && <> · {e.location}</>}
                 </p>
-                {e.body && <p>{e.body}</p>}
-                {e.data.registration && (
-                  <a class="btn btn--primary" href={e.data.registration} rel="noopener">Register</a>
-                )}
+                {e.Content ? <div class="event-desc prose-sm"><e.Content /></div>
+                  : e.description && <p class="event-desc">{e.description}</p>}
+                <p class="event-actions">
+                  {e.link && <a class="btn btn--primary" href={e.link} rel="noopener">{e.source === 'site' ? 'Register' : 'Details'}</a>}
+                  <a class="btn btn--ghost" href={url(`/events/${e.id}.ics`)} download>Add to Calendar</a>
+                </p>
               </div>
             </li>
           ))}
@@ -60,32 +71,54 @@ const past = events.filter((e) => (e.data.endDate ?? e.data.date) < now);
   </section>
 
   {past.length > 0 && (
-  <section class="section section--gray" id="past">
-    <div class="container">
-      <h2 class="section-heading">Past Events</h2>
-      <ul class="past-list">
+    <section class="section section--gray" id="past">
+      <div class="container">
+        <h2 class="section-heading">Past Events</h2>
+        <ul class="past-list">
           {past.map((e) => (
             <li>
-              <strong>{e.data.title}</strong> — {formatDate(e.data.date)}
-              {e.data.location && <> · {e.data.location}</>}
+              <strong>{e.title}</strong> — {formatEventDate(e)}
+              {e.location && <> · {e.location}</>}
             </li>
           ))}
         </ul>
-    </div>
-  </section>
+      </div>
+    </section>
   )}
 </Base>
 
 <style>
+  .intro {
+    max-width: 720px;
+    margin: 0 auto 2.25rem;
+    text-align: center;
+    color: var(--gray-700);
+  }
+  .intro a:not(.btn) {
+    text-decoration: underline;
+  }
+  .subscribe {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .ical-link {
+    font-size: 0.95rem;
+  }
+  .empty {
+    text-align: center;
+    color: var(--gray-700);
+  }
   .event-list {
     list-style: none;
-    margin: 0;
+    margin: 0 auto;
     padding: 0;
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
-    max-width: 780px;
-    margin-inline: auto;
+    max-width: 820px;
   }
   .event {
     display: flex;
@@ -116,29 +149,54 @@ const past = events.filter((e) => (e.data.endDate ?? e.data.date) < now);
     font-size: 1.9rem;
     font-weight: 600;
   }
+  .event-body {
+    min-width: 0;
+  }
   .event-body h3 {
     margin-bottom: 0.2rem;
   }
   .event-meta {
     color: var(--gray-700);
-    font-size: 0.92rem;
-    margin: 0 0 0.5rem;
+    font-size: 0.95rem;
+    margin: 0 0 0.6rem;
+  }
+  .event-desc {
+    color: var(--gray-700);
+    margin: 0 0 0.75rem;
+  }
+  .event-desc :global(p) {
+    margin: 0 0 0.6rem;
+  }
+  .event-desc :global(a) {
+    text-decoration: underline;
+  }
+  .event-actions {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin: 0;
+  }
+  .btn--ghost {
+    border: 2px solid var(--umd-black);
+    color: var(--umd-black);
+    padding: calc(0.7rem - 2px) calc(1.6rem - 2px);
+  }
+  .btn--ghost:hover {
+    background: var(--umd-black);
+    color: var(--white);
+    text-decoration: none;
   }
   .past-list {
-    max-width: 780px;
+    max-width: 820px;
     margin: 0 auto;
     color: var(--gray-700);
   }
   .past-list li {
     margin-bottom: 0.5rem;
   }
-  .intro {
-    max-width: 680px;
-    margin: 0 auto;
-    text-align: center;
-    color: var(--gray-700);
-  }
-  .intro a {
-    text-decoration: underline;
+  @media (max-width: 560px) {
+    .event {
+      flex-direction: column;
+    }
   }
 </style>

@@ -37,6 +37,8 @@ const events = defineCollection({
     location: z.string().optional(),
     image: z.string().optional(),
     registration: z.string().url().optional(),
+    /** 全天活动（只写日期）为 true；写了具体时间请设为 false，并把 date 写成 2027-02-09T12:00:00-05:00 */
+    allDay: z.boolean().default(true),
   }),
 });
 
