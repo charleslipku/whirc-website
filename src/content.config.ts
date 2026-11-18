@@ -36,7 +36,11 @@ const events = defineCollection({
     endDate: z.coerce.date().optional(),
     location: z.string().optional(),
     image: z.string().optional(),
+    /** 主报名链接（Zoom 注册页等），按钮文字由 registrationLabel 决定 */
     registration: z.string().url().optional(),
+    registrationLabel: z.string().default('Register'),
+    /** 额外按钮，例如混合场次的线下 RSVP：- { label: "RSVP (In Person)", url: "https://..." } */
+    extraLinks: z.array(z.object({ label: z.string(), url: z.string().url() })).default([]),
     /** 全天活动（只写日期）为 true；写了具体时间请设为 false，并把 date 写成 2027-02-09T12:00:00-05:00 */
     allDay: z.boolean().default(true),
   }),

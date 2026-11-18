@@ -8,7 +8,7 @@ export interface SiteConfig {
   description: string;
   contact: { email: string; address: string };
   social: { linkedin?: string; instagram?: string; twitter?: string };
-  calendar?: { ical?: string; subscribe?: string };
+  calendar?: { ical?: string; subscribe?: string; view?: string };
   links: { donate?: string; grandChallenges: string; accessibility: string; privacy: string };
 }
 

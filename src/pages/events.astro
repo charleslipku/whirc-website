@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import { url } from '../utils';
 import { site } from '../site';
-import { getAllEvents, isUpcoming, formatEventDate } from '../events';
+import { getAllEvents, isUpcoming, formatEventDate, googleCalendarUrl } from '../events';
 
 const all = await getAllEvents();
 const now = new Date();
@@ -10,6 +10,8 @@ const upcoming = all.filter((e) => isUpcoming(e, now));
 const past = all.filter((e) => !isUpcoming(e, now)).reverse();
 const subscribe = site.calendar?.subscribe?.trim();
 const ical = site.calendar?.ical?.trim();
+const calendarView = site.calendar?.view?.trim();
+const pageUrl = new URL(url('/events/'), Astro.site).href;
 ---
 
 <Base title="Events" description="WHIRC seminars, symposia, workshops, and community events.">
@@ -28,10 +30,11 @@ const ical = site.calendar?.ical?.trim();
           Event announcements go out first to our mailing list —
           <a href={url('/contact/')}>contact us</a> to join.
         </p>
-        {(subscribe || ical) && (
+        {(subscribe || ical || calendarView) && (
           <p class="subscribe">
-            {subscribe && <a class="btn btn--primary" href={subscribe} rel="noopener">Subscribe to WHIRC Calendar</a>}
-            {ical && <a class="ical-link" href={ical.replace(/^https?:/, 'webcal:')}>iCal / Outlook feed</a>}
+            {subscribe && <a class="btn btn--primary" href={subscribe} rel="noopener">Subscribe in Google Calendar</a>}
+            {ical && <a class="ical-link" href={ical.replace(/^https?:/, 'webcal:')}>Apple / Outlook feed</a>}
+            {calendarView && <a class="ical-link" href={calendarView} rel="noopener">View full calendar</a>}
           </p>
         )}
       </div>
@@ -59,8 +62,15 @@ const ical = site.calendar?.ical?.trim();
                 {e.Content ? <div class="event-desc prose-sm"><e.Content /></div>
                   : e.description && <p class="event-desc">{e.description}</p>}
                 <p class="event-actions">
-                  {e.link && <a class="btn btn--primary" href={e.link} rel="noopener">{e.source === 'site' ? 'Register' : 'Details'}</a>}
-                  <a class="btn btn--ghost" href={url(`/events/${e.id}.ics`)} download>Add to Calendar</a>
+                  {e.links.map((l) => (
+                    <a class="btn btn--primary" href={l.url} rel="noopener">{l.label}</a>
+                  ))}
+                </p>
+                <p class="event-calendar">
+                  <span class="event-calendar-label">Add to calendar:</span>
+                  <a href={googleCalendarUrl(e, `${pageUrl}#${e.id}`)} rel="noopener" target="_blank">Google</a>
+                  <span aria-hidden="true">·</span>
+                  <a href={url(`/events/${e.id}.ics`)} download>Apple / Outlook (.ics)</a>
                 </p>
               </div>
             </li>
@@ -176,15 +186,23 @@ const ical = site.calendar?.ical?.trim();
     flex-wrap: wrap;
     margin: 0;
   }
-  .btn--ghost {
-    border: 2px solid var(--umd-black);
-    color: var(--umd-black);
-    padding: calc(0.7rem - 2px) calc(1.6rem - 2px);
+  .event-actions:empty {
+    display: none;
   }
-  .btn--ghost:hover {
-    background: var(--umd-black);
-    color: var(--white);
-    text-decoration: none;
+  .event-calendar {
+    display: flex;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 0.75rem 0 0;
+    font-size: 0.92rem;
+    color: var(--gray-700);
+  }
+  .event-calendar-label {
+    font-weight: 600;
+  }
+  .event-calendar a {
+    text-decoration: underline;
   }
   .past-list {
     max-width: 820px;

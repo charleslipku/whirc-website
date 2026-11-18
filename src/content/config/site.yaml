@@ -20,9 +20,14 @@ social:
 # 2) 「集成日历」里复制「公开地址（iCal 格式）」填到 ical；复制「公开网址」填到 subscribe
 # 3) 之后在日历里增删活动即可，网站每天自动同步（也可在 GitHub Actions 手动触发）
 # 留空则只显示 src/content/events/ 里手写的活动
+# 2026-11-16：Marie 在个人 UMD 账号下建了公开日历「WHIRC Events」并发来以下地址。
+# 若日后改用 WHIRC 公共邮箱重建日历，把三个地址换成新日历的即可。
 calendar:
-  ical: ""
-  subscribe: ""
+  ical: "https://calendar.google.com/calendar/ical/c_723c6fb0f4b2705ad208673e8460ad2d18ef43fa8d8786a90a002cb43b4e1efd%40group.calendar.google.com/public/basic.ics"
+  # 「Subscribe」按钮：Google 用户一键把整个日历加到自己的 Google Calendar
+  subscribe: "https://calendar.google.com/calendar/r?cid=c_723c6fb0f4b2705ad208673e8460ad2d18ef43fa8d8786a90a002cb43b4e1efd%40group.calendar.google.com"
+  # 网页版日历（浏览用）
+  view: "https://calendar.google.com/calendar/embed?src=c_723c6fb0f4b2705ad208673e8460ad2d18ef43fa8d8786a90a002cb43b4e1efd%40group.calendar.google.com&ctz=America%2FNew_York"
 
 links:
   # 捐赠页（Grand Challenges 建好后填 URL；留空则 Donate 按钮与导航项不显示）
