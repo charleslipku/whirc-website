@@ -1,1 +1,42 @@
-[]
+[
+  {
+    "id": "cal-08c1v9sl7lras6t1ho77nvl0e1-google-com",
+    "title": "WHIRC Seminar - Nutrition and Migraines among Women",
+    "date": "2027-02-09T17:00:00.000Z",
+    "allDay": false,
+    "location": null,
+    "description": "Zoom registration link:  https://umd.zoom.us/meeting/register/K7ItDlqBS2ivdE8Z2APbvQ#/registration",
+    "url": null,
+    "endDate": "2027-02-09T18:00:00.000Z"
+  },
+  {
+    "id": "cal-5ugn9h4e2tnar4htgh9mb2q7ef-google-com",
+    "title": "WHIRC Seminar (Hybrid) - Reproductive Health Policy Implications for Health and Science",
+    "date": "2027-03-01T17:00:00.000Z",
+    "allDay": false,
+    "location": null,
+    "description": "In person: 2208 LeFrak Hall Registration for online:  https://umd.zoom.us/meeting/register/_KtSynmASX2dHond-YCDmQ#/registration Registration for in-person:  https://docs.google.com/forms/d/e/1FAIpQLSdyk4f9eJW3Nb5JfQGq72DMxb2Tv-IdvUuGAMtu7K1u0hqlFA/viewform",
+    "url": null,
+    "endDate": "2027-03-01T18:00:00.000Z"
+  },
+  {
+    "id": "cal-7430rklr5oev28to359bcqhpia-google-com",
+    "title": "WHIRC x HERizon Symposium - Advancing Women's Health through Interdisciplinary Collaboration",
+    "date": "2027-04-09T13:00:00.000Z",
+    "allDay": false,
+    "location": null,
+    "description": "Save the Date - Interest Form:  https://docs.google.com/forms/d/e/1FAIpQLSeMcAiwMuzGN6DaNScXFQ0WDHgo4wkFWoUZpqvlNHPnZsYZqg/viewform",
+    "url": null,
+    "endDate": "2027-04-09T22:00:00.000Z"
+  },
+  {
+    "id": "cal-2ktvakmp0ukvihbgjrn7hbj4gt-google-com",
+    "title": "WHIRC Seminar: Women's Hormonal Health and Metabolic Risk",
+    "date": "2027-04-20T16:00:00.000Z",
+    "allDay": false,
+    "location": null,
+    "description": "Register here to receive Zoom link:  https://umd.zoom.us/meeting/register/sxWFkHV-T-CXjmgpArsIaA#/registration",
+    "url": null,
+    "endDate": "2027-04-20T17:00:00.000Z"
+  }
+]
